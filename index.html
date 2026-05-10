@@ -1,59 +1,185 @@
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Latihan Soal Acak | Benar/Salah dengan Variasi Jawaban</title>
-    <!-- Tailwind + Font Awesome + Google Fonts -->
+    <title>Quizizz Style | Latihan Soal Interaktif</title>
+    <!-- Tailwind CSS + Font Awesome + Google Fonts (Poppins) -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        * { font-family: 'Inter', system-ui, sans-serif; }
-        body { background: #eef2f5; }
-        .quiz-card { transition: all 0.2s ease; }
-        .quiz-card:hover { transform: translateY(-2px); box-shadow: 0 10px 20px -8px rgba(0,0,0,0.1); }
-        .radio-group label { cursor: pointer; transition: 0.1s; }
-        .fade-in { animation: fadeIn 0.2s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
+        * { font-family: 'Poppins', sans-serif; }
+        body { background: linear-gradient(135deg, #1e1e1e 0%, #1e1e1e 100%); background-attachment: fixed; }
+      
+        .quiz-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 25px -12px rgba(0, 0, 0, 0.25);
+        }
+        .option-btn {
+            transition: all 0.2s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        .option-btn:active {
+            transform: scale(0.96);
+        }
+        .fade-scale {
+            animation: fadeScale 0.2s ease-out;
+        }
+        @keyframes fadeScale {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .progress-bar-fill {
+            transition: width 0.4s ease;
+        }
+        .score-badge {
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(4px);
+        }
+        /* custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 10px;
+        }
     </style>
 </head>
-<body class="antialiased">
+<body class="min-h-screen p-6 md:p-10">
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
-        <!-- Header dengan info acak -->
+    <div class="max-w-6xl mx-auto">
+        <!-- Header dengan animasi -->
         <div class="text-center mb-10">
-            <div class="inline-flex items-center gap-2 bg-indigo-100 text-indigo-800 px-4 py-2 rounded-full text-sm font-semibold shadow-sm mb-4">
-                <i class="fas fa-random"></i>
-                <span>
-SEMANGAT BELAJAR!! GO ASAS SEM.2</span>
+            <div class="inline-flex items-center gap-3 bg-white/20 backdrop-blur-md px-5 py-2 rounded-full text-white text-sm font-semibold shadow-lg mb-5">
+                <i class="fas fa-bolt"></i>
+                <span>FAD SEMANGAT ASAS!!</span>
             </div>
-            <h1 class="text-3xl md:text-4xl font-extrabold text-slate-800 tracking-tight">📚 LATIHAN ASAS PJOK XI SEM.2</h1>
-            <p class="text-slate-500 mt-2 max-w-2xl mx-auto">Jawaban soal tidak selalu BENAR — ada yang SALAH! Pilih opsi, langsung lihat hasil + kunci jawaban jika salah. <strong>Urutan soal diacak</strong> setiap halaman dimuat ulang.</p>
-            <div class="mt-3 flex justify-center gap-3">
-                <button id="refreshOrderBtn" class="bg-white hover:bg-gray-100 text-gray-700 border border-gray-300 px-4 py-1.5 rounded-full text-sm shadow-sm flex items-center gap-1"><i class="fas fa-sync-alt"></i> Acak Ulang Soal</button>
-                <button id="resetAllBtn" class="bg-white hover:bg-gray-100 text-gray-700 border border-gray-300 px-4 py-1.5 rounded-full text-sm shadow-sm flex items-center gap-1"><i class="fas fa-trash-alt"></i> Reset Semua Jawaban</button>
+            <h1 class="text-5xl md:text-6xl font-extrabold text-white tracking-tight br-1">🎯 LATIHAN ASAS PJOK SEM.2</h1>
+        
+
+        <!-- Panel Skor & Progress -->
+        <div class="bg-black/70 backdrop-blur-md rounded-2xl p-5 mb-8 my-5 shadow-xl border border-white/20 ">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                <div class="flex items-center gap-4">
+                    <div class="bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full w-16 h-16 flex items-center justify-center shadow-lg">
+                        <i class="fas fa-trophy text-white text-3xl"></i>
+                    </div>
+                    <div>
+                        <p class="text-white/70 text-sm">Skor Anda</p>
+                        <p class="text-white text-4xl font-bold" id="scoreDisplay">0</p>
+                    </div>
+                </div>
+                <div class="flex-1 w-full max-w-md">
+                    <div class="flex justify-between text-white text-sm mb-1">
+                        <span><i class="fas fa-check-circle"></i> Progres menjawab</span>
+                        <span id="progressCount">0 / 0</span>
+                    </div>
+                    <div class="w-full bg-white/30 rounded-full h-3 overflow-hidden">
+                        <div id="progressFill" class="progress-bar-fill bg-gradient-to-r from-green-400 to-emerald-500 h-full rounded-full w-0"></div>
+                    </div>
+                </div>
+                <div class="flex gap-3">
+                    <button id="reshuffleBtn" class="bg-white/20 hover:bg-white/30 text-white px-5 py-2.5 rounded-xl transition flex items-center gap-2 backdrop-blur-sm font-semibold"><i class="fas fa-random"></i> Acak Soal</button>
+                    <button id="resetBtn" class="bg-white/20 hover:bg-white/30 text-white px-5 py-2.5 rounded-xl transition flex items-center gap-2 backdrop-blur-sm font-semibold"><i class="fas fa-undo-alt"></i> Reset</button>
+                </div>
             </div>
         </div>
 
-        <!-- Container soal dinamis -->
-        <div id="quiz-container" class="space-y-10"></div>
-
+        <!-- Container Grid Soal (masonry style responsif) -->
+        <div id="quizGrid" class="grid grid-cols-1 md:grid-cols-2 gap-6 transition-all"></div>
+        
         <!-- Footer -->
-        <div class="mt-14 text-center text-sm text-slate-500 border-t pt-6">
-            <i class="fas fa-lightbulb text-amber-500"></i> Beberapa soal sengaja dibuat salah untuk variasi — kunci jawaban akan memberitahu fakta yang benar.
+        <div class="mt-12 text-center text-white/60 text-sm">
+            <i class="fas fa-lightbulb"></i> Beberapa soal sengaja memiliki jawaban SALAH — baca kunci jawaban untuk belajar.
         </div>
     </div>
 
     <script>
-        // ============================================================
-        // DATA SOAL ASLI (materi) – akan kita modifikasi beberapa menjadi SALAH
-        // Tapi kita buat dataset baru dengan teks & status kebenaran yang bervariasi
-        // Kami membuat 3 kategori, total 55 soal, namun sekitar 40% diubah menjadi pernyataan salah
-        // agar tidak semua jawaban benar. Setiap soal punya teks dan isCorrect (boolean)
-        // ============================================================
+        // ======================== DATABASE SOAL DENGAN VARIASI JAWABAN (BENAR/SALAH) ========================
+        // Setiap objek: text, correct (boolean), explanation
+        const bankSoal = [
+            // KESEHATAN UMUM (14)
+            { text: "Vitamin C adalah vitamin yang terdapat pada banyak buah.", correct: true, explanation: "Jeruk, jambu, kiwi, dan stroberi kaya vitamin C." },
+            { text: "Makanan tinggi protein hanya berguna untuk menambah lemak tubuh.", correct: false, explanation: "Protein membangun dan memperbaiki jaringan, bukan menambah lemak." },
+            { text: "Mengonsumsi makanan terlalu asin dapat menyebabkan tekanan darah tinggi.", correct: true, explanation: "Natrium berlebih memicu hipertensi." },
+            { text: "Menggosok gigi dianjurkan cukup seminggu sekali.", correct: false, explanation: "Harus minimal dua kali sehari." },
+            { text: "Kebiasaan mencuci sayur sebelum dimasak bertujuan untuk membersihkan kotoran dan pestisida.", correct: true, explanation: "Mencuci sayur menghilangkan residu berbahaya." },
+            { text: "Salah satu tanda tubuh kurang istirahat adalah mata terasa berat.", correct: true, explanation: "Mata berat, lelah, dan mengantuk adalah gejala kurang istirahat." },
+            { text: "Perilaku Hidup Bersih dan Sehat disingkat PHBS.", correct: true, explanation: "PHBS adalah singkatan yang benar." },
+            { text: "Salah satu cara mencegah flu adalah menghindari minum air putih.", correct: false, explanation: "Mencegah flu dengan vitamin C, istirahat, dan hidrasi yang cukup." },
+            { text: "Cara menjaga kesehatan mental adalah istirahat cukup dan berinteraksi sosial.", correct: true, explanation: "Istirahat dan sosialisasi baik untuk mental." },
+            { text: "Air putih baik diminum minimal 8 gelas per hari.", correct: true, explanation: "Rekomendasi umum 8 gelas sehari." },
+            { text: "Kebiasaan duduk terlalu lama dapat menyebabkan risiko penyakit jantung.", correct: true, explanation: "Gaya hidup sedentari meningkatkan risiko kardiovaskular." },
+            { text: "Salah satu sumber karbohidrat adalah nasi.", correct: true, explanation: "Nasi kaya karbohidrat." },
+            { text: "Contoh makanan berserat tinggi adalah daging sapi.", correct: false, explanation: "Daging sapi rendah serat, contoh serat: pepaya, sayur, buah." },
+            { text: "Minum kopi dingin dapat menggantikan kebutuhan air putih harian.", correct: false, explanation: "Air putih tetap utama, kopi bersifat diuretik." },
+            // KEBUGARAN JASMANI (20)
+            { text: "Lari jarak jauh melatih daya tahan.", correct: true, explanation: "Meningkatkan kapasitas kardiorespirasi." },
+            { text: "Sit up dilakukan untuk melatih otot perut.", correct: true, explanation: "Fokus pada rectus abdominis." },
+            { text: "Kemampuan bergerak cepat dalam waktu singkat disebut kelincahan.", correct: false, explanation: "Itu adalah kecepatan (speed), kelincahan = agility." },
+            { text: "Contoh latihan kekuatan otot lengan adalah dengan pull up.", correct: true, explanation: "Pull up mengandalkan lengan dan punggung." },
+            { text: "Faktor yang mempengaruhi kebugaran hanya faktor usia.", correct: false, explanation: "Ada banyak: pola makan, istirahat, genetik, aktivitas." },
+            { text: "Latihan yang berguna meningkatkan daya tahan jantung adalah jogging.", correct: true, explanation: "Jogging adalah latihan aerobik." },
+            { text: "Senam aerobik termasuk latihan daya tahan.", correct: true, explanation: "Meningkatkan ketahanan kardio." },
+            { text: "Tes 12 menit Cooper digunakan untuk mengukur kekuatan otot.", correct: false, explanation: "Mengukur daya tahan kardiorespirasi (jarak lari 12 menit)." },
+            { text: "Contoh latihan kelenturan otot punggung adalah back up.", correct: true, explanation: "Back up melenturkan dan menguatkan punggung." },
+            { text: "Latihan speed skipping bermanfaat untuk melatih jantung.", correct: true, explanation: "Meningkatkan denyut jantung." },
+            { text: "Frekuensi latihan ideal dalam seminggu adalah 3-5 kali.", correct: true, explanation: "Rekomendasi WHO untuk kebugaran." },
+            { text: "Push up bermanfaat untuk melatih otot lengan dan dada.", correct: true, explanation: "Melatih dada, trisep, bahu." },
+            { text: "Melakukan pendinginan berfungsi untuk menambah massa otot.", correct: false, explanation: "Pendinginan mengurangi cedera & menormalkan detak jantung." },
+            { text: "Power adalah gabungan dari kekuatan dan kecepatan.", correct: true, explanation: "Power = strength × speed." },
+            { text: "Latihan interval merupakan latihan yang diselingi istirahat.", correct: true, explanation: "Interval training = selingan kerja & istirahat." },
+            { text: "Prinsip spesialisasi latihan berarti latihan harus sesuai tujuan.", correct: true, explanation: "Specificity principle." },
+            { text: "Jogging sebaiknya dilakukan hanya 5 menit per hari.", correct: false, explanation: "Efektif 20-30 menit untuk manfaat kardio." },
+            { text: "Pull up melatih otot lengan dan punggung.", correct: true, explanation: "Melibatkan latissimus dorsi & biseps." },
+            { text: "Lari sprint 100 meter termasuk latihan kecepatan.", correct: true, explanation: "Sprint eksplosif melatih kecepatan." },
+            { text: "Untuk meningkatkan daya tahan jantung, latihan yang cocok adalah angkat beban maksimal.", correct: false, explanation: "Lebih baik aerobik: renang, jogging, sepeda." },
+            // SOFTBALL (23)
+            { text: "Softball adalah permainan yang dimainkan oleh 9 pemain.", correct: true, explanation: "Satu tim terdiri dari 9 pemain di lapangan." },
+            { text: "Permainan softball berasal dari negara Inggris.", correct: false, explanation: "Berasal dari Amerika Serikat (Chicago, 1887)." },
+            { text: "Lapangan softball berbentuk setengah lingkaran atau diamond (infield berbentuk segi empat).", correct: true, explanation: "Bentuk diamond dengan base segi empat." },
+            { text: "Jumlah base dalam softball ada 3.", correct: false, explanation: "Ada 4 base (first, second, third, home)." },
+            { text: "Bola yang dilemparkan pitcher harus berada di strike zone.", correct: true, explanation: "Strike zone area sah untuk dipukul." },
+            { text: "Jika bola dilempar dan tidak sesuai strike zone disebut ball.", correct: true, explanation: "Ball adalah lemparan di luar strike zone." },
+            { text: "Jika batter mendapatkan 4 ball, maka ia berhak jalan ke first base.", correct: true, explanation: "Walk / base on balls." },
+            { text: "Pergantian regu antara menyerang dan bertahan disebut half inning.", correct: false, explanation: "Disebut inning (atau setengah inning untuk satu sisi)." },
+            { text: "Jumlah inning standar dalam softball ada 7.", correct: true, explanation: "Pertandingan softball 7 inning." },
+            { text: "Pemain yang menjaga antara second base dan third base adalah short stop.", correct: true, explanation: "Shortstop posisi di area itu." },
+            { text: "Peralatan yang wajib digunakan pemain softball adalah sarung tangan (mitt).", correct: true, explanation: "Mitt untuk menangkap bola." },
+            { text: "Pukulan yang menyebabkan bola memantul ke tanah disebut fly ball.", correct: false, explanation: "Ground ball, fly ball adalah melambung." },
+            { text: "Bola yang melambung tinggi setelah dipukul disebut fly ball.", correct: true, explanation: "Fly ball = bola melambung." },
+            { text: "Pukulan lurus dan cepat disebut line drive.", correct: true, explanation: "Line drive pukulan datar cepat." },
+            { text: "Pemain yang menjaga base pertama adalah first baseman, pemain yang menjaga base ketiga adalah third baseman.", correct: true, explanation: "Sesuai posisi softball." },
+            { text: "Area tempat pemain menunggu giliran memukul disebut bullpen.", correct: false, explanation: "Disebut dugout, bullpen untuk pitcher cadangan." },
+            { text: "Pitcher melempar bola dari pitcher's plate.", correct: true, explanation: "Juga disebut rubber." },
+            { text: "Istilah double play berarti 2 out dalam satu permainan.", correct: true, explanation: "Dua mati dalam satu rangkaian." },
+            { text: "Pemain bertahan yang menangkap bola di udara menyebabkan out.", correct: true, explanation: "Fly out." },
+            { text: "Jarak antara pitcher dan home plate adalah sekitar 12–14 meter.", correct: true, explanation: "Jarak resmi ~13,11 meter." },
+            { text: "Lapangan softball terdiri dari dua bagian yaitu infield dan outfield.", correct: true, explanation: "Infield dan outfield." },
+            { text: "Sarung tangan untuk menangkap bola disebut glove (mitt juga benar).", correct: true, explanation: "Mitt atau glove." },
+            { text: "Area lemparan pitcher berbentuk persegi panjang.", correct: false, explanation: "Biasanya lingkaran atau setengah lingkaran." }
+        ];
 
-        // Fungsi untuk mengacak array (Fisher-Yates)
+        // Variabel global
+        let currentQuestions = [];       // array soal setelah diacak
+        let userAnswers = new Map();     // key: index soal, value: true/false (boolean pilihan user)
+        let score = 0;
+        
+        // Elemen DOM
+        const gridContainer = document.getElementById('quizGrid');
+        const scoreDisplay = document.getElementById('scoreDisplay');
+        const progressCountSpan = document.getElementById('progressCount');
+        const progressFillDiv = document.getElementById('progressFill');
+        const reshuffleBtn = document.getElementById('reshuffleBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        
+        // Fungsi mengacak array (Fisher-Yates)
         function shuffleArray(arr) {
             for (let i = arr.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
@@ -61,226 +187,226 @@ SEMANGAT BELAJAR!! GO ASAS SEM.2</span>
             }
             return arr;
         }
-
-        // --- KATEGORI 1: KESEHATAN UMUM (14 soal, campuran benar & salah) ---
-        const kesehatanRaw = [
-            { text: "Vitamin C adalah vitamin yang terdapat pada banyak buah.", correct: true, pembahasan: "Vitamin C memang banyak pada jeruk, jambu, stroberi, dll." },
-            { text: "Makanan tinggi protein hanya berguna untuk menambah lemak tubuh.", correct: false, pembahasan: "Protein sebenarnya membantu membangun dan memperbaiki jaringan, bukan menambah lemak." },
-            { text: "Mengonsumsi makanan terlalu asin dapat menyebabkan tekanan darah tinggi.", correct: true, pembahasan: "Kadar natrium tinggi memicu hipertensi." },
-            { text: "Menggosok gigi dianjurkan cukup seminggu sekali.", correct: false, pembahasan: "Dianjurkan minimal dua kali sehari untuk menjaga kesehatan gigi." },
-            { text: "Kebiasaan mencuci sayur sebelum dimasak bertujuan untuk membersihkan kotoran dan pestisida.", correct: true, pembahasan: "Mencuci sayur menghilangkan kotoran dan residu pestisida." },
-            { text: "Salah satu tanda tubuh kurang istirahat adalah mata terasa berat.", correct: true, pembahasan: "Mata berat, lelah, dan mengantuk adalah tanda kurang istirahat." },
-            { text: "Perilaku Hidup Bersih dan Sehat disingkat PHBS.", correct: true, pembahasan: "PHBS adalah singkatan yang benar." },
-            { text: "Salah satu cara mencegah flu adalah menghindari minum air putih.", correct: false, pembahasan: "Mencegah flu antara lain dengan vitamin C, istirahat, dan menjaga hidrasi." },
-            { text: "Cara menjaga kesehatan mental adalah istirahat cukup dan berinteraksi sosial.", correct: true, pembahasan: "Istirahat dan sosialisasi baik untuk kesehatan mental." },
-            { text: "Air putih baik diminum minimal 8 gelas per hari.", correct: true, pembahasan: "Rekomendasi umum adalah 8 gelas sehari." },
-            { text: "Kebiasaan duduk terlalu lama dapat menyebabkan risiko penyakit jantung.", correct: true, pembahasan: "Gaya hidup sedentari meningkatkan risiko kardiovaskular." },
-            { text: "Salah satu sumber karbohidrat adalah nasi.", correct: true, pembahasan: "Nasi kaya akan karbohidrat." },
-            { text: "Contoh makanan berserat tinggi adalah daging sapi.", correct: false, pembahasan: "Daging sapi rendah serat, contoh berserat tinggi adalah pepaya, sayuran, dan buah." },
-            { text: "Minum kopi dingin dapat menggantikan kebutuhan air putih harian.", correct: false, pembahasan: "Air putih tetap utama; kopi bersifat diuretik ringan." }
-        ];
-
-        // --- KATEGORI 2: KEBUGARAN JASMANI (20 soal, campuran) ---
-        const kebugaranRaw = [
-            { text: "Lari jarak jauh melatih daya tahan.", correct: true, pembahasan: "Lari jarak jauh meningkatkan daya tahan kardiorespirasi." },
-            { text: "Sit up dilakukan untuk melatih otot perut.", correct: true, pembahasan: "Gerakan sit up fokus pada otot perut." },
-            { text: "Kemampuan bergerak cepat dalam waktu singkat disebut kelincahan.", correct: false, pembahasan: "Itu adalah kecepatan (speed), kelincahan adalah agility." },
-            { text: "Contoh latihan kekuatan otot lengan adalah dengan pull up.", correct: true, pembahasan: "Pull up mengandalkan lengan dan punggung." },
-            { text: "Faktor yang mempengaruhi kebugaran hanya faktor usia.", correct: false, pembahasan: "Ada banyak faktor: pola makan, istirahat, genetik, aktivitas." },
-            { text: "Latihan yang berguna meningkatkan daya tahan jantung adalah jogging.", correct: true, pembahasan: "Jogging termasuk latihan aerobik baik untuk jantung." },
-            { text: "Senam aerobik termasuk latihan daya tahan.", correct: true, pembahasan: "Senam aerobik melatih ketahanan kardio." },
-            { text: "Tes 12 menit Cooper digunakan untuk mengukur kekuatan otot.", correct: false, pembahasan: "Tes Cooper mengukur daya tahan kardiorespirasi (jarak lari 12 menit)." },
-            { text: "Contoh latihan kelenturan otot punggung adalah back up.", correct: true, pembahasan: "Back up melenturkan dan menguatkan punggung." },
-            { text: "Latihan speed skipping bermanfaat untuk melatih jantung.", correct: true, pembahasan: "Skipping cepat meningkatkan denyut jantung." },
-            { text: "Frekuensi latihan ideal dalam seminggu adalah 3-5 kali.", correct: true, pembahasan: "Rekomendasi umum untuk kebugaran." },
-            { text: "Push up bermanfaat untuk melatih otot lengan dan dada.", correct: true, pembahasan: "Push up melatih dada, trisep, dan bahu." },
-            { text: "Melakukan pendinginan berfungsi untuk menambah massa otot.", correct: false, pembahasan: "Pendinginan berfungsi mengurangi risiko cedera dan menormalkan detak jantung." },
-            { text: "Power adalah gabungan dari kekuatan dan kecepatan.", correct: true, pembahasan: "Power = strength × speed." },
-            { text: "Latihan interval merupakan latihan yang diselingi istirahat.", correct: true, pembahasan: "Interval training menyelingi kerja dan istirahat." },
-            { text: "Prinsip spesialisasi latihan berarti latihan harus sesuai tujuan.", correct: true, pembahasan: "Specificity principle: latihan spesifik untuk tujuan tertentu." },
-            { text: "Jogging sebaiknya dilakukan hanya 5 menit per hari.", correct: false, pembahasan: "Jogging efektif 20-30 menit untuk manfaat kardio." },
-            { text: "Pull up melatih otot lengan dan punggung.", correct: true, pembahasan: "Pull up melibatkan latissimus dorsi dan biseps." },
-            { text: "Lari sprint 100 meter termasuk latihan kecepatan.", correct: true, pembahasan: "Sprint adalah latihan kecepatan eksplosif." },
-            { text: "Untuk meningkatkan daya tahan jantung, latihan yang cocok adalah angkat beban maksimal.", correct: false, pembahasan: "Daya tahan jantung lebih baik dengan aerobik seperti renang, jogging, bersepeda." }
-        ];
-
-        // --- KATEGORI 3: SOFTBALL (23 soal, campuran) ---
-        const softballRaw = [
-            { text: "Softball adalah permainan yang dimainkan oleh 9 pemain.", correct: true, pembahasan: "Satu tim softball terdiri dari 9 pemain di lapangan." },
-            { text: "Permainan softball berasal dari negara Inggris.", correct: false, pembahasan: "Softball berasal dari Amerika Serikat (Chicago, 1887)." },
-            { text: "Lapangan softball berbentuk setengah lingkaran atau diamond (infield berbentuk segi empat).", correct: true, pembahasan: "Bentuk diamond dengan base segi empat." },
-            { text: "Jumlah base dalam softball ada 3.", correct: false, pembahasan: "Ada 4 base: first, second, third, dan home plate." },
-            { text: "Bola yang dilemparkan pitcher harus berada di strike zone.", correct: true, pembahasan: "Strike zone adalah area sah untuk pukulan." },
-            { text: "Jika bola dilempar dan tidak sesuai strike zone disebut ball.", correct: true, pembahasan: "Ball adalah lemparan di luar strike zone." },
-            { text: "Jika batter mendapatkan 4 ball, maka ia berhak jalan ke first base.", correct: true, pembahasan: "Walk (base on balls)." },
-            { text: "Pergantian regu antara menyerang dan bertahan disebut half inning.", correct: false, pembahasan: "Disebut inning (atau setengah inning jika satu sisi)." },
-            { text: "Jumlah inning standar dalam softball ada 7.", correct: true, pembahasan: "Pertandingan softball umumnya 7 inning." },
-            { text: "Pemain yang menjaga antara second base dan third base adalah short stop.", correct: true, pembahasan: "Shortstop berada di area tersebut." },
-            { text: "Peralatan yang wajib digunakan pemain softball adalah sarung tangan (mitt).", correct: true, pembahasan: "Mitt digunakan untuk menangkap bola." },
-            { text: "Pukulan yang menyebabkan bola memantul ke tanah disebut fly ball.", correct: false, pembahasan: "Memantul ke tanah adalah ground ball, fly ball adalah melambung." },
-            { text: "Bola yang melambung tinggi setelah dipukul disebut fly ball.", correct: true, pembahasan: "Fly ball adalah bola melambung." },
-            { text: "Pukulan lurus dan cepat disebut line drive.", correct: true, pembahasan: "Line drive adalah pukulan datar cepat." },
-            { text: "Pemain yang menjaga base pertama adalah first baseman, pemain yang menjaga base ketiga adalah third baseman.", correct: true, pembahasan: "Sesuai posisi dalam softball." },
-            { text: "Area tempat pemain menunggu giliran memukul disebut bullpen.", correct: false, pembahasan: "Disebut dugout, bullpen untuk pelempar cadangan." },
-            { text: "Pitcher melempar bola dari pitcher's plate.", correct: true, pembahasan: "Juga disebut rubber." },
-            { text: "Istilah double play berarti 2 out dalam satu permainan.", correct: true, pembahasan: "Double play adalah dua mati dalam satu rangkaian." },
-            { text: "Pemain bertahan yang menangkap bola di udara menyebabkan out.", correct: true, pembahasan: "Tangkapan langsung (fly out)." },
-            { text: "Jarak antara pitcher dan home plate adalah sekitar 12–14 meter.", correct: true, pembahasan: "Jarak resmi sekitar 13,11 meter (43 kaki)." },
-            { text: "Lapangan softball terdiri dari dua bagian yaitu infield dan outfield.", correct: true, pembahasan: "Infield (dalam) dan outfield (luar)." },
-            { text: "Sarung tangan untuk menangkap bola disebut glove (mitt juga benar).", correct: true, pembahasan: "Mitt atau glove." },
-            { text: "Area lemparan pitcher berbentuk persegi panjang.", correct: false, pembahasan: "Area pitcher biasanya berbentuk lingkaran atau setengah lingkaran." }
-        ];
-
-        // Gabungkan semua soal dalam bentuk objek dengan kategori
-        let allQuestions = [
-            { category: "🏥 KESEHATAN UMUM", icon: "fa-heartbeat", questions: kesehatanRaw },
-            { category: "💪 KEBUGARAN JASMANI", icon: "fa-dumbbell", questions: kebugaranRaw },
-            { category: "🥎 SOFTBALL", icon: "fa-baseball-ball", questions: softballRaw }
-        ];
-
-        // Fungsi untuk mengacak urutan soal dalam setiap kategori (tetapi tetap terkelompok kategori)
-        function shuffleQuestionsInCategories(categories) {
-            return categories.map(cat => {
-                const shuffled = shuffleArray([...cat.questions]);
-                return { ...cat, questions: shuffled };
-            });
+        
+        // Inisialisasi / acak ulang soal
+        function initRandomQuestions() {
+            // Clone bank soal lalu acak
+            currentQuestions = shuffleArray([...bankSoal]);
+            userAnswers.clear();
+            calculateScore();
+            renderQuizGrid();
+            updateProgressAndScore();
         }
-
-        // State: menyimpan data soal yang sudah diacak (urutan)
-        let currentCategories = shuffleQuestionsInCategories(allQuestions);
-
-        // Fungsi render ulang seluruh quiz berdasarkan currentCategories
-        function renderQuiz() {
-            const container = document.getElementById('quiz-container');
-            if (!container) return;
-            container.innerHTML = '';
-
-            let globalId = 0;
-
-            currentCategories.forEach(cat => {
-                // Warna gradasi berbeda tiap kategori
-                let gradient = "";
-                if (cat.icon === "fa-heartbeat") gradient = "from-rose-700 to-pink-800";
-                else if (cat.icon === "fa-dumbbell") gradient = "from-emerald-700 to-teal-800";
-                else gradient = "from-amber-700 to-orange-800";
+        
+        // Hitung skor berdasarkan userAnswers yang tersimpan
+        function calculateScore() {
+            let newScore = 0;
+            for (let i = 0; i < currentQuestions.length; i++) {
+                const userAns = userAnswers.get(i);
+                if (userAns !== undefined && userAns === currentQuestions[i].correct) {
+                    newScore++;
+                }
+            }
+            score = newScore;
+            if (scoreDisplay) scoreDisplay.innerText = score;
+            return score;
+        }
+        
+        // Update progress bar & teks progres
+        function updateProgressAndScore() {
+            const total = currentQuestions.length;
+            const answered = userAnswers.size;
+            if (progressCountSpan) progressCountSpan.innerText = `${answered} / ${total}`;
+            const percent = total === 0 ? 0 : (answered / total) * 100;
+            if (progressFillDiv) progressFillDiv.style.width = `${percent}%`;
+            calculateScore(); // refresh skor tampilan
+        }
+        
+        // Render semua kartu soal (grid)
+        function renderQuizGrid() {
+            if (!gridContainer) return;
+            gridContainer.innerHTML = '';
+            if (currentQuestions.length === 0) {
+                gridContainer.innerHTML = '<div class="col-span-full text-center text-white text-xl">Memuat soal...</div>';
+                return;
+            }
+            
+            currentQuestions.forEach((q, idx) => {
+                const userChoice = userAnswers.get(idx); // boolean (true=benar dipilih, false=salah dipilih) atau undefined
+                const isAnswered = userChoice !== undefined;
+                const isCorrectAnswer = (isAnswered && userChoice === q.correct);
                 
-                const sectionDiv = document.createElement('div');
-                sectionDiv.className = 'bg-white rounded-2xl shadow-xl overflow-hidden border border-slate-200 transition-all mb-8';
-                sectionDiv.innerHTML = `
-                    <div class="px-6 py-5 bg-gradient-to-r ${gradient} text-white">
-                        <div class="flex items-center gap-3">
-                            <i class="fas ${cat.icon} text-2xl drop-shadow-sm"></i>
-                            <h2 class="text-xl md:text-2xl font-bold tracking-wide">${cat.category}</h2>
-                            <span class="ml-auto text-xs bg-white/20 px-3 py-1 rounded-full font-medium">${cat.questions.length} soal</span>
+                // membuat kartu
+                const card = document.createElement('div');
+                card.className = 'quiz-card bg-white rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all fade-scale';
+                card.innerHTML = `
+                    <div class="p-5 border-b border-gray-100 flex justify-between items-start gap-2">
+                        <div class="flex-1">
+                            <div class="flex items-center gap-2 text-xs text-gray-400 font-semibold mb-2">
+                                <i class="fas fa-question-circle"></i> Soal ${idx+1}
+                                ${isAnswered ? (isCorrectAnswer ? '<span class="bg-green-100 text-green-700 px-2 py-0.5 rounded-full text-[10px]"><i class="fas fa-check"></i> Terjawab</span>' : '<span class="bg-red-100 text-red-600 px-2 py-0.5 rounded-full text-[10px]"><i class="fas fa-times"></i> Terjawab</span>') : '<span class="bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full text-[10px]">Belum dijawab</span>'}
+                            </div>
+                            <p class="text-gray-800 font-semibold text-base md:text-lg leading-relaxed">${escapeHtml(q.text)}</p>
                         </div>
-                        <p class="text-white/80 text-sm mt-1">👉 Klik pilihan Benar/Salah, hasil & kunci langsung muncul</p>
+                        <div class="text-right">
+                            <div class="w-8 h-8 rounded-full bg-gradient-to-r ${isAnswered ? (isCorrectAnswer ? 'from-green-400 to-green-600' : 'from-red-400 to-red-600') : 'from-gray-300 to-gray-400'} text-white text-xs flex items-center justify-center font-bold shadow">
+                                ${isAnswered ? (isCorrectAnswer ? '✓' : '✗') : '?'}
+                            </div>
+                        </div>
                     </div>
-                    <div class="divide-y divide-slate-100" id="cat-${globalId}-content"></div>
-                `;
-                container.appendChild(sectionDiv);
-                
-                const contentDiv = sectionDiv.querySelector(`[id^="cat-"]`);
-                const questions = cat.questions;
-
-                questions.forEach((q, idx) => {
-                    const questionId = `q_${globalId}_${idx}`;
-                    const radioName = `radio_${globalId}_${idx}`;
-                    const feedbackId = `fb_${globalId}_${idx}`;
-                    const nomor = idx + 1;
-                    
-                    const card = document.createElement('div');
-                    card.className = 'quiz-card p-5 md:px-6 md:py-5 bg-white hover:bg-slate-50 transition-all';
-                    card.innerHTML = `
-                        <div class="flex flex-col lg:flex-row lg:items-start gap-4">
-                            <div class="flex-1">
-                                <div class="flex items-start gap-3">
-                                    <span class="flex-shrink-0 w-7 h-7 rounded-full bg-indigo-100 text-indigo-700 font-bold text-sm flex items-center justify-center mt-0.5">${nomor}</span>
-                                    <p class="text-slate-800 text-base md:text-lg font-medium leading-relaxed">${escapeHtml(q.text)}</p>
-                                </div>
-                            </div>
-                            <div class="lg:w-80 flex items-center gap-3 bg-slate-50 px-4 py-2 rounded-xl border border-slate-200 radio-group">
-                                <label class="flex items-center gap-2 cursor-pointer text-emerald-700 font-medium hover:bg-emerald-50 px-2 py-1 rounded">
-                                    <input type="radio" name="${radioName}" value="true" class="w-4 h-4 accent-emerald-600"> 
-                                    <span>✅ Benar</span>
-                                </label>
-                                <label class="flex items-center gap-2 cursor-pointer text-rose-700 font-medium hover:bg-rose-50 px-2 py-1 rounded">
-                                    <input type="radio" name="${radioName}" value="false" class="w-4 h-4 accent-rose-500"> 
-                                    <span>❌ Salah</span>
-                                </label>
-                            </div>
+                    <div class="p-5 bg-gray-50 flex flex-col sm:flex-row gap-3 justify-between items-center">
+                        <div class="flex gap-3 w-full sm:w-auto">
+                            <button data-idx="${idx}" data-choice="true" class="option-btn flex-1 sm:flex-none bg-emerald-100 hover:bg-emerald-200 text-emerald-800 font-bold py-2.5 px-6 rounded-xl transition shadow flex items-center justify-center gap-2 ${userChoice === true ? 'ring-2 ring-emerald-500 bg-emerald-200' : ''}">
+                                <i class="fas fa-thumbs-up"></i> Benar
+                            </button>
+                            <button data-idx="${idx}" data-choice="false" class="option-btn flex-1 sm:flex-none bg-rose-100 hover:bg-rose-200 text-rose-800 font-bold py-2.5 px-6 rounded-xl transition shadow flex items-center justify-center gap-2 ${userChoice === false ? 'ring-2 ring-rose-500 bg-rose-200' : ''}">
+                                <i class="fas fa-thumbs-down"></i> Salah
+                            </button>
                         </div>
-                        <div id="${feedbackId}" class="feedback-area mt-4 text-sm rounded-lg transition-all"></div>
-                    `;
-                    contentDiv.appendChild(card);
-                    
-                    // Event listener radio
-                    const radioTrue = card.querySelector(`input[value="true"]`);
-                    const radioFalse = card.querySelector(`input[value="false"]`);
-                    const feedbackDiv = document.getElementById(feedbackId);
-                    
-                    const handleChange = (e) => {
-                        const selectedVal = e.target.value; // "true" atau "false"
-                        const userCorrect = (selectedVal === "true");
-                        const actualCorrect = q.correct;
-                        
-                        if (userCorrect === actualCorrect) {
-                            feedbackDiv.innerHTML = `
-                                <div class="bg-emerald-50 border border-emerald-200 text-emerald-800 p-3 rounded-xl flex items-start gap-2 shadow-sm fade-in">
-                                    <i class="fas fa-check-circle text-emerald-500 text-lg mt-0.5"></i>
-                                    <div><span class="font-bold">✅ Jawaban Benar!</span> <span class="text-emerald-700">${q.correct ? "Pernyataan ini sesuai fakta." : "Pernyataan ini memang salah seperti yang kamu pilih."}</span></div>
-                                </div>
-                            `;
-                        } else {
-                            // Jawaban salah: tampilkan kunci jawaban dengan pembahasan yang benar
-                            const benarSalahText = actualCorrect ? "BENAR" : "SALAH";
-                            const penjelasan = q.pembahasan || (actualCorrect ? "Pernyataan ini sesuai dengan materi." : "Pernyataan ini tidak tepat berdasarkan materi.");
-                            feedbackDiv.innerHTML = `
-                                <div class="bg-red-50 border-l-4 border-red-500 text-red-800 p-3 rounded-r-xl shadow-sm flex flex-col gap-1 fade-in">
-                                    <div class="flex items-start gap-2">
-                                        <i class="fas fa-times-circle text-red-500 text-lg mt-0.5"></i>
-                                        <div>
-                                            <span class="font-bold">❌ Jawaban Salah</span>
-                                            <div class="mt-1 text-red-700 text-sm">📘 <span class="font-semibold">Kunci Jawaban:</span> Pernyataan seharusnya <span class="underline font-bold">${benarSalahText}</span></div>
-                                            <div class="mt-1 bg-white/80 p-2 rounded border border-red-200 text-slate-800 text-sm">
-                                                <i class="fas fa-info-circle text-red-400 mr-1"></i> 
-                                                <strong>Fakta benar:</strong> ${escapeHtml(penjelasan)}
-                                            </div>
-                                            <p class="text-xs mt-1 text-slate-600">📌 Pernyataan asli: "${escapeHtml(q.text)}"</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            `;
-                        }
-                    };
-                    
-                    if (radioTrue) radioTrue.addEventListener('change', handleChange);
-                    if (radioFalse) radioFalse.addEventListener('change', handleChange);
-                    
-                    globalId++;
-                });
+                        ${isAnswered ? `<button data-feedback-idx="${idx}" class="show-feedback-btn text-xs text-indigo-600 hover:text-indigo-800 font-medium flex items-center gap-1"><i class="fas fa-key"></i> Lihat Kunci</button>` : '<span class="text-xs text-gray-400">Pilih jawaban untuk melihat kunci jika salah</span>'}
+                    </div>
+                    <div id="feedback-${idx}" class="px-5 pb-5 bg-gray-50 hidden transition-all"></div>
+                `;
+                gridContainer.appendChild(card);
+            });
+            
+            // Attach event listener untuk tombol Benar/Salah (menggunakan event delegation)
+            document.querySelectorAll('.option-btn').forEach(btn => {
+                btn.removeEventListener('click', handleAnswerClick);
+                btn.addEventListener('click', handleAnswerClick);
+            });
+            // Tombol lihat kunci
+            document.querySelectorAll('.show-feedback-btn').forEach(btn => {
+                btn.removeEventListener('click', handleShowFeedback);
+                btn.addEventListener('click', handleShowFeedback);
             });
         }
         
-        // Fungsi reset semua jawaban: hapus centang & bersihkan semua feedback
+        // Handler menjawab
+        function handleAnswerClick(e) {
+            const btn = e.currentTarget;
+            const idx = parseInt(btn.getAttribute('data-idx'));
+            const choiceVal = btn.getAttribute('data-choice'); // "true" atau "false"
+            const userChoiceBool = (choiceVal === "true");
+            if (isNaN(idx)) return;
+            
+            // Simpan jawaban
+            userAnswers.set(idx, userChoiceBool);
+            // Re-render grid untuk update tampilan tombol & feedback bisa ditampilkan lagi (namun kita akan update card spesifik agar efisien)
+            // Akan lebih smooth jika update card tersebut tanpa re-render semua. Tapi karena tidak terlalu besar, lakukan render ulang saja.
+            renderQuizGrid();
+            updateProgressAndScore();
+            
+            // Tampilkan feedback langsung untuk soal yang baru dijawab (kartu baru sudah ada, tapi feedback masih hidden)
+            // maka kita panggil showFeedback untuk soal ini otomatis
+            const feedbackDiv = document.getElementById(`feedback-${idx}`);
+            if (feedbackDiv) {
+                const q = currentQuestions[idx];
+                const userAns = userAnswers.get(idx);
+                const isCorrect = (userAns === q.correct);
+                feedbackDiv.innerHTML = generateFeedbackHTML(q, userAns, isCorrect);
+                feedbackDiv.classList.remove('hidden');
+                feedbackDiv.classList.add('fade-scale');
+            } else {
+                // jika belum ada mungkin karena render ulang baru, langsung panggil show via dom
+                setTimeout(() => {
+                    const fb = document.getElementById(`feedback-${idx}`);
+                    if (fb) {
+                        const qq = currentQuestions[idx];
+                        const ua = userAnswers.get(idx);
+                        const ic = (ua === qq.correct);
+                        fb.innerHTML = generateFeedbackHTML(qq, ua, ic);
+                        fb.classList.remove('hidden');
+                    }
+                }, 20);
+            }
+        }
+        
+        // Menampilkan feedback (manual dari tombol lihat kunci)
+        function handleShowFeedback(e) {
+            const btn = e.currentTarget;
+            const idx = parseInt(btn.getAttribute('data-feedback-idx'));
+            if (isNaN(idx)) return;
+            const feedbackDiv = document.getElementById(`feedback-${idx}`);
+            if (feedbackDiv) {
+                const q = currentQuestions[idx];
+                const userAns = userAnswers.get(idx);
+                if (userAns !== undefined) {
+                    const isCorrect = (userAns === q.correct);
+                    feedbackDiv.innerHTML = generateFeedbackHTML(q, userAns, isCorrect);
+                    feedbackDiv.classList.remove('hidden');
+                    feedbackDiv.classList.add('fade-scale');
+                } else {
+                    feedbackDiv.innerHTML = `<div class="bg-yellow-50 p-3 rounded-xl text-yellow-800 text-sm"><i class="fas fa-info-circle"></i> Belum ada jawaban. Pilih Benar/Salah terlebih dahulu.</div>`;
+                    feedbackDiv.classList.remove('hidden');
+                }
+            }
+        }
+        
+        // Generate HTML feedback (kunci jawaban dan pembahasan)
+        function generateFeedbackHTML(question, userChoiceBool, isCorrectLocal) {
+            if (!isCorrectLocal) {
+                const correctAnswerText = question.correct ? "BENAR" : "SALAH";
+                return `
+                    <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded-xl shadow-md">
+                        <div class="flex gap-2 items-start">
+                            <i class="fas fa-times-circle text-red-500 text-xl mt-0.5"></i>
+                            <div>
+                                <p class="font-bold text-red-700">❌ Jawaban Salah</p>
+                                <p class="text-sm text-gray-700 mt-1"><span class="font-semibold">🔑 Kunci Jawaban:</span> Pernyataan seharusnya <span class="underline font-bold">${correctAnswerText}</span></p>
+                                <div class="bg-white p-2 rounded-lg mt-2 text-sm text-gray-800 border border-red-100">
+                                    <i class="fas fa-graduation-cap text-indigo-500 mr-1"></i> <strong>Pembahasan:</strong> ${escapeHtml(question.explanation)}
+                                </div>
+                                <p class="text-xs text-gray-500 mt-2">📌 Pernyataan: "${escapeHtml(question.text)}"</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                return `
+                    <div class="bg-green-50 border-l-4 border-green-500 p-4 rounded-xl shadow-md">
+                        <div class="flex gap-2 items-start">
+                            <i class="fas fa-check-circle text-green-500 text-xl mt-0.5"></i>
+                            <div>
+                                <p class="font-bold text-green-700">✅ Jawaban Benar!</p>
+                                <p class="text-sm text-gray-700 mt-1">${question.correct ? "Pernyataan ini sesuai fakta." : "Pernyataan ini memang salah, pilihan kamu tepat."}</p>
+                                <div class="bg-white p-2 rounded-lg mt-2 text-sm text-gray-800">
+                                    <i class="fas fa-info-circle text-blue-500 mr-1"></i> ${escapeHtml(question.explanation)}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+        
+        // Fungsi reset semua jawaban (tanpa mengacak ulang soal)
         function resetAllAnswers() {
-            document.querySelectorAll('input[type="radio"]').forEach(radio => radio.checked = false);
-            document.querySelectorAll('.feedback-area').forEach(fb => fb.innerHTML = '');
-            showToast("Semua pilihan & feedback telah direset!", "bg-slate-700");
+            userAnswers.clear();
+            renderQuizGrid();
+            updateProgressAndScore();
+            // Sembunyikan semua feedback
+            document.querySelectorAll('[id^="feedback-"]').forEach(el => {
+                el.classList.add('hidden');
+                el.innerHTML = '';
+            });
+            showToast("Semua jawaban direset, skor kembali 0", "bg-indigo-500");
         }
         
-        // Fungsi mengacak ulang soal (urutan soal & urutan dalam kategori)
+        // Acak ulang soal (shuffle ulang)
         function reshuffleQuestions() {
-            currentCategories = shuffleQuestionsInCategories(allQuestions);
-            renderQuiz();
-            showToast("Urutan soal dan kategori telah diacak! Mulai kerjakan lagi.", "bg-indigo-600");
+            currentQuestions = shuffleArray([...bankSoal]);
+            userAnswers.clear();
+            renderQuizGrid();
+            updateProgressAndScore();
+            showToast("Soal & urutan diacak ulang! Mulai jawab lagi.", "bg-purple-600");
         }
         
-        // Helper toast
+        // Toast notifikasi
         function showToast(msg, bgColor = "bg-gray-800") {
             const toast = document.createElement('div');
-            toast.innerText = msg;
-            toast.className = `fixed bottom-6 left-1/2 transform -translate-x-1/2 ${bgColor} text-white px-5 py-2.5 rounded-full text-sm shadow-lg z-50 transition-all duration-300 font-medium flex items-center gap-2`;
-            toast.innerHTML = `<i class="fas fa-exchange-alt"></i> ${msg}`;
+            toast.className = `fixed bottom-5 left-1/2 transform -translate-x-1/2 ${bgColor} text-white px-5 py-3 rounded-full shadow-2xl z-50 text-sm font-semibold flex items-center gap-2 backdrop-blur-sm transition-all duration-300`;
+            toast.innerHTML = `<i class="fas fa-sync-alt"></i> ${msg}`;
             document.body.appendChild(toast);
             setTimeout(() => {
                 toast.style.opacity = '0';
@@ -297,12 +423,13 @@ SEMANGAT BELAJAR!! GO ASAS SEM.2</span>
             });
         }
         
-        // Inisialisasi
-        document.addEventListener('DOMContentLoaded', () => {
-            renderQuiz();
-            document.getElementById('resetAllBtn')?.addEventListener('click', resetAllAnswers);
-            document.getElementById('refreshOrderBtn')?.addEventListener('click', reshuffleQuestions);
-        });
+        // Event listeners
+        reshuffleBtn?.addEventListener('click', reshuffleQuestions);
+        resetBtn?.addEventListener('click', resetAllAnswers);
+        
+        // Mulai aplikasi
+        initRandomQuestions();
     </script>
 </body>
 </html>
+```
