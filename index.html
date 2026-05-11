@@ -1,435 +1,2323 @@
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>Quizizz Style | Latihan Soal Interaktif</title>
-    <!-- Tailwind CSS + Font Awesome + Google Fonts (Poppins) -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Latihan Soal PJOK Kelas XI - Full Quiz</title>
     <style>
-        * { font-family: 'Poppins', sans-serif; }
-        body { background: linear-gradient(135deg, #1e1e1e 0%, #1e1e1e 100%); background-attachment: fixed; }
-      
-        .quiz-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 20px 25px -12px rgba(0, 0, 0, 0.25);
+        :root {
+            --bg: #f0f4f8;
+            --card-bg: #ffffff;
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --success: #16a34a;
+            --danger: #dc2626;
+            --warning: #f59e0b;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 25px -3px rgba(0, 0, 0, 0.1), 0 4px 10px -4px rgba(0, 0, 0, 0.1);
+            --radius: 16px;
+            --radius-sm: 10px;
+            --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .option-btn {
-            transition: all 0.2s cubic-bezier(0.23, 1, 0.32, 1);
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        .option-btn:active {
-            transform: scale(0.96);
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            line-height: 1.6;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
         }
-        .fade-scale {
-            animation: fadeScale 0.2s ease-out;
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 16px;
         }
-        @keyframes fadeScale {
-            from { opacity: 0; transform: scale(0.95); }
-            to { opacity: 1; transform: scale(1); }
+        header {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 20px 24px;
+            margin-bottom: 16px;
+            box-shadow: var(--shadow);
+            text-align: center;
+            position: sticky;
+            top: 12px;
+            z-index: 100;
+        }
+        header h1 {
+            font-size: clamp(1.2rem, 3vw, 1.6rem);
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 4px;
+        }
+        header .subtitle {
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+        .category-selector {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+            margin-bottom: 16px;
+        }
+        .cat-btn {
+            padding: 10px 16px;
+            border-radius: 50px;
+            border: 2px solid var(--border);
+            background: var(--card-bg);
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: var(--transition);
+            white-space: nowrap;
+            color: var(--text);
+            letter-spacing: 0.01em;
+        }
+        .cat-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow);
+        }
+        .cat-btn.active {
+            background: var(--primary);
+            color: #fff;
+            border-color: var(--primary);
+            box-shadow: var(--shadow);
+        }
+        .main-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 24px;
+            box-shadow: var(--shadow-lg);
+            min-height: 400px;
+            transition: var(--transition);
+        }
+        .progress-bar-wrap {
+            background: #e5e7eb;
+            border-radius: 50px;
+            height: 8px;
+            margin-bottom: 16px;
+            overflow: hidden;
         }
         .progress-bar-fill {
+            height: 100%;
+            background: var(--primary);
+            border-radius: 50px;
             transition: width 0.4s ease;
         }
-        .score-badge {
-            background: rgba(255,255,255,0.2);
-            backdrop-filter: blur(4px);
+        .question-num {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 4px;
+            letter-spacing: 0.02em;
         }
-        /* custom scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
+        .question-text {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--text);
+            line-height: 1.5;
         }
-        ::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 10px;
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 24px;
         }
-        ::-webkit-scrollbar-thumb {
-            background: #888;
-            border-radius: 10px;
+        .option-btn {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 18px;
+            border-radius: var(--radius-sm);
+            border: 2px solid var(--border);
+            background: #f8fafc;
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: var(--transition);
+            text-align: left;
+            font-weight: 500;
+            color: var(--text);
+            position: relative;
+        }
+        .option-btn:hover {
+            border-color: #93c5fd;
+            background: #eff6ff;
+            transform: translateX(3px);
+        }
+        .option-btn.selected {
+            border-color: var(--primary);
+            background: #dbeafe;
+            font-weight: 700;
+        }
+        .option-btn.correct {
+            border-color: var(--success) !important;
+            background: #dcfce7 !important;
+            color: #15803d !important;
+            font-weight: 700;
+            animation: pulse-green 0.5s ease;
+        }
+        .option-btn.incorrect {
+            border-color: var(--danger) !important;
+            background: #fef2f2 !important;
+            color: #b91c1c !important;
+            font-weight: 700;
+            animation: shake 0.4s ease;
+        }
+        .option-btn:disabled {
+            cursor: not-allowed;
+            opacity: 0.85;
+        }
+        .option-letter {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+            transition: var(--transition);
+        }
+        .option-btn.selected .option-letter {
+            background: var(--primary);
+            color: #fff;
+        }
+        .option-btn.correct .option-letter {
+            background: var(--success);
+            color: #fff;
+        }
+        .option-btn.incorrect .option-letter {
+            background: var(--danger);
+            color: #fff;
+        }
+        @keyframes pulse-green {
+            0%,
+            100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.02);
+            }
+        }
+        @keyframes shake {
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+            20% {
+                transform: translateX(-6px);
+            }
+            40% {
+                transform: translateX(6px);
+            }
+            60% {
+                transform: translateX(-4px);
+            }
+            80% {
+                transform: translateX(4px);
+            }
+        }
+        .feedback {
+            padding: 12px 18px;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 16px;
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+        .feedback.show {
+            display: block;
+        }
+        .feedback.correct-fb {
+            background: #dcfce7;
+            color: #15803d;
+            border: 1px solid #86efac;
+        }
+        .feedback.incorrect-fb {
+            background: #fef2f2;
+            color: #b91c1c;
+            border: 1px solid #fca5a5;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .nav-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .nav-btn {
+            padding: 12px 24px;
+            border-radius: 50px;
+            border: none;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: var(--transition);
+            letter-spacing: 0.01em;
+        }
+        .btn-prev {
+            background: #e2e8f0;
+            color: var(--text);
+        }
+        .btn-prev:hover {
+            background: #cbd5e1;
+        }
+        .btn-next {
+            background: var(--primary);
+            color: #fff;
+        }
+        .btn-next:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+        .btn-reset {
+            background: #fff;
+            color: var(--danger);
+            border: 2px solid var(--danger);
+        }
+        .btn-reset:hover {
+            background: #fef2f2;
+        }
+        .score-display {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 16px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        .score-chip {
+            padding: 8px 16px;
+            border-radius: 50px;
+            background: #f1f5f9;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .score-chip .emoji {
+            font-size: 1.2rem;
+        }
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+            margin-top: 16px;
+        }
+        .summary-item {
+            text-align: center;
+            padding: 10px;
+            border-radius: var(--radius-sm);
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        .summary-item:hover {
+            background: #eff6ff;
+            border-color: var(--primary);
+        }
+        .summary-item .num {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        .summary-item.done {
+            background: #dcfce7;
+            border-color: #86efac;
+        }
+        .summary-item.done .num {
+            color: #15803d;
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: var(--text-light);
+            font-size: 0.8rem;
+        }
+        @media (max-width: 600px) {
+            .container {
+                padding: 8px;
+            }
+            .main-card {
+                padding: 16px;
+                border-radius: var(--radius-sm);
+            }
+            .cat-btn {
+                padding: 8px 12px;
+                font-size: 0.75rem;
+            }
+            .option-btn {
+                padding: 12px 14px;
+                font-size: 0.85rem;
+                gap: 8px;
+            }
+            .option-letter {
+                width: 30px;
+                height: 30px;
+                font-size: 0.8rem;
+            }
+            .question-text {
+                font-size: 1rem;
+            }
+            .nav-btn {
+                padding: 10px 18px;
+                font-size: 0.8rem;
+            }
         }
     </style>
 </head>
-<body class="min-h-screen p-6 md:p-10">
+<body>
+    <div class="container">
+        <header>
+            <h1>📘 Latihan Soal PJOK Kelas XI</h1>
+            <p class="subtitle">Pilih kategori, jawab soal, dan lihat skor kamu!</p>
+        </header>
 
-    <div class="max-w-6xl mx-auto">
-        <!-- Header dengan animasi -->
-        <div class="text-center mb-10">
-            <div class="inline-flex items-center gap-3 bg-white/20 backdrop-blur-md px-5 py-2 rounded-full text-white text-sm font-semibold shadow-lg mb-5">
-                <i class="fas fa-bolt"></i>
-                <span>FAD SEMANGAT ASAS!!</span>
-            </div>
-            <h1 class="text-5xl md:text-6xl font-extrabold text-white tracking-tight br-1">🎯 LATIHAN ASAS PJOK SEM.2</h1>
-        
+        <div class="category-selector" id="categorySelector"></div>
 
-        <!-- Panel Skor & Progress -->
-        <div class="bg-black/70 backdrop-blur-md rounded-2xl p-5 mb-8 my-5 shadow-xl border border-white/20 ">
-            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
-                <div class="flex items-center gap-4">
-                    <div class="bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full w-16 h-16 flex items-center justify-center shadow-lg">
-                        <i class="fas fa-trophy text-white text-3xl"></i>
-                    </div>
-                    <div>
-                        <p class="text-white/70 text-sm">Skor Anda</p>
-                        <p class="text-white text-4xl font-bold" id="scoreDisplay">0</p>
-                    </div>
-                </div>
-                <div class="flex-1 w-full max-w-md">
-                    <div class="flex justify-between text-white text-sm mb-1">
-                        <span><i class="fas fa-check-circle"></i> Progres menjawab</span>
-                        <span id="progressCount">0 / 0</span>
-                    </div>
-                    <div class="w-full bg-white/30 rounded-full h-3 overflow-hidden">
-                        <div id="progressFill" class="progress-bar-fill bg-gradient-to-r from-green-400 to-emerald-500 h-full rounded-full w-0"></div>
-                    </div>
-                </div>
-                <div class="flex gap-3">
-                    <button id="reshuffleBtn" class="bg-white/20 hover:bg-white/30 text-white px-5 py-2.5 rounded-xl transition flex items-center gap-2 backdrop-blur-sm font-semibold"><i class="fas fa-random"></i> Acak Soal</button>
-                    <button id="resetBtn" class="bg-white/20 hover:bg-white/30 text-white px-5 py-2.5 rounded-xl transition flex items-center gap-2 backdrop-blur-sm font-semibold"><i class="fas fa-undo-alt"></i> Reset</button>
-                </div>
-            </div>
+        <div class="main-card" id="mainCard">
+            <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progressBar" style="width:0%"></div></div>
+            <div class="question-num" id="questionNum"></div>
+            <div class="question-text" id="questionText"></div>
+            <div class="options" id="optionsContainer"></div>
+            <div class="feedback" id="feedback"></div>
+            <div class="score-display" id="scoreDisplay"></div>
+            <div class="nav-buttons" id="navButtons"></div>
+            <div class="summary-grid" id="summaryGrid"></div>
         </div>
-
-        <!-- Container Grid Soal (masonry style responsif) -->
-        <div id="quizGrid" class="grid grid-cols-1 md:grid-cols-2 gap-6 transition-all"></div>
-        
-        <!-- Footer -->
-        <div class="mt-12 text-center text-white/60 text-sm">
-            <i class="fas fa-lightbulb"></i> Beberapa soal sengaja memiliki jawaban SALAH — baca kunci jawaban untuk belajar.
-        </div>
+        <footer>© 2025 Latihan Soal PJOK XI • Semua soal dari bank soal resmi</footer>
     </div>
 
     <script>
-        // ======================== DATABASE SOAL DENGAN VARIASI JAWABAN (BENAR/SALAH) ========================
-        // Setiap objek: text, correct (boolean), explanation
-        const bankSoal = [
-            // KESEHATAN UMUM (14)
-            { text: "Vitamin C adalah vitamin yang terdapat pada banyak buah.", correct: true, explanation: "Jeruk, jambu, kiwi, dan stroberi kaya vitamin C." },
-            { text: "Makanan tinggi protein hanya berguna untuk menambah lemak tubuh.", correct: false, explanation: "Protein membangun dan memperbaiki jaringan, bukan menambah lemak." },
-            { text: "Mengonsumsi makanan terlalu asin dapat menyebabkan tekanan darah tinggi.", correct: true, explanation: "Natrium berlebih memicu hipertensi." },
-            { text: "Menggosok gigi dianjurkan cukup seminggu sekali.", correct: false, explanation: "Harus minimal dua kali sehari." },
-            { text: "Kebiasaan mencuci sayur sebelum dimasak bertujuan untuk membersihkan kotoran dan pestisida.", correct: true, explanation: "Mencuci sayur menghilangkan residu berbahaya." },
-            { text: "Salah satu tanda tubuh kurang istirahat adalah mata terasa berat.", correct: true, explanation: "Mata berat, lelah, dan mengantuk adalah gejala kurang istirahat." },
-            { text: "Perilaku Hidup Bersih dan Sehat disingkat PHBS.", correct: true, explanation: "PHBS adalah singkatan yang benar." },
-            { text: "Salah satu cara mencegah flu adalah menghindari minum air putih.", correct: false, explanation: "Mencegah flu dengan vitamin C, istirahat, dan hidrasi yang cukup." },
-            { text: "Cara menjaga kesehatan mental adalah istirahat cukup dan berinteraksi sosial.", correct: true, explanation: "Istirahat dan sosialisasi baik untuk mental." },
-            { text: "Air putih baik diminum minimal 8 gelas per hari.", correct: true, explanation: "Rekomendasi umum 8 gelas sehari." },
-            { text: "Kebiasaan duduk terlalu lama dapat menyebabkan risiko penyakit jantung.", correct: true, explanation: "Gaya hidup sedentari meningkatkan risiko kardiovaskular." },
-            { text: "Salah satu sumber karbohidrat adalah nasi.", correct: true, explanation: "Nasi kaya karbohidrat." },
-            { text: "Contoh makanan berserat tinggi adalah daging sapi.", correct: false, explanation: "Daging sapi rendah serat, contoh serat: pepaya, sayur, buah." },
-            { text: "Minum kopi dingin dapat menggantikan kebutuhan air putih harian.", correct: false, explanation: "Air putih tetap utama, kopi bersifat diuretik." },
-            // KEBUGARAN JASMANI (20)
-            { text: "Lari jarak jauh melatih daya tahan.", correct: true, explanation: "Meningkatkan kapasitas kardiorespirasi." },
-            { text: "Sit up dilakukan untuk melatih otot perut.", correct: true, explanation: "Fokus pada rectus abdominis." },
-            { text: "Kemampuan bergerak cepat dalam waktu singkat disebut kelincahan.", correct: false, explanation: "Itu adalah kecepatan (speed), kelincahan = agility." },
-            { text: "Contoh latihan kekuatan otot lengan adalah dengan pull up.", correct: true, explanation: "Pull up mengandalkan lengan dan punggung." },
-            { text: "Faktor yang mempengaruhi kebugaran hanya faktor usia.", correct: false, explanation: "Ada banyak: pola makan, istirahat, genetik, aktivitas." },
-            { text: "Latihan yang berguna meningkatkan daya tahan jantung adalah jogging.", correct: true, explanation: "Jogging adalah latihan aerobik." },
-            { text: "Senam aerobik termasuk latihan daya tahan.", correct: true, explanation: "Meningkatkan ketahanan kardio." },
-            { text: "Tes 12 menit Cooper digunakan untuk mengukur kekuatan otot.", correct: false, explanation: "Mengukur daya tahan kardiorespirasi (jarak lari 12 menit)." },
-            { text: "Contoh latihan kelenturan otot punggung adalah back up.", correct: true, explanation: "Back up melenturkan dan menguatkan punggung." },
-            { text: "Latihan speed skipping bermanfaat untuk melatih jantung.", correct: true, explanation: "Meningkatkan denyut jantung." },
-            { text: "Frekuensi latihan ideal dalam seminggu adalah 3-5 kali.", correct: true, explanation: "Rekomendasi WHO untuk kebugaran." },
-            { text: "Push up bermanfaat untuk melatih otot lengan dan dada.", correct: true, explanation: "Melatih dada, trisep, bahu." },
-            { text: "Melakukan pendinginan berfungsi untuk menambah massa otot.", correct: false, explanation: "Pendinginan mengurangi cedera & menormalkan detak jantung." },
-            { text: "Power adalah gabungan dari kekuatan dan kecepatan.", correct: true, explanation: "Power = strength × speed." },
-            { text: "Latihan interval merupakan latihan yang diselingi istirahat.", correct: true, explanation: "Interval training = selingan kerja & istirahat." },
-            { text: "Prinsip spesialisasi latihan berarti latihan harus sesuai tujuan.", correct: true, explanation: "Specificity principle." },
-            { text: "Jogging sebaiknya dilakukan hanya 5 menit per hari.", correct: false, explanation: "Efektif 20-30 menit untuk manfaat kardio." },
-            { text: "Pull up melatih otot lengan dan punggung.", correct: true, explanation: "Melibatkan latissimus dorsi & biseps." },
-            { text: "Lari sprint 100 meter termasuk latihan kecepatan.", correct: true, explanation: "Sprint eksplosif melatih kecepatan." },
-            { text: "Untuk meningkatkan daya tahan jantung, latihan yang cocok adalah angkat beban maksimal.", correct: false, explanation: "Lebih baik aerobik: renang, jogging, sepeda." },
-            // SOFTBALL (23)
-            { text: "Softball adalah permainan yang dimainkan oleh 9 pemain.", correct: true, explanation: "Satu tim terdiri dari 9 pemain di lapangan." },
-            { text: "Permainan softball berasal dari negara Inggris.", correct: false, explanation: "Berasal dari Amerika Serikat (Chicago, 1887)." },
-            { text: "Lapangan softball berbentuk setengah lingkaran atau diamond (infield berbentuk segi empat).", correct: true, explanation: "Bentuk diamond dengan base segi empat." },
-            { text: "Jumlah base dalam softball ada 3.", correct: false, explanation: "Ada 4 base (first, second, third, home)." },
-            { text: "Bola yang dilemparkan pitcher harus berada di strike zone.", correct: true, explanation: "Strike zone area sah untuk dipukul." },
-            { text: "Jika bola dilempar dan tidak sesuai strike zone disebut ball.", correct: true, explanation: "Ball adalah lemparan di luar strike zone." },
-            { text: "Jika batter mendapatkan 4 ball, maka ia berhak jalan ke first base.", correct: true, explanation: "Walk / base on balls." },
-            { text: "Pergantian regu antara menyerang dan bertahan disebut half inning.", correct: false, explanation: "Disebut inning (atau setengah inning untuk satu sisi)." },
-            { text: "Jumlah inning standar dalam softball ada 7.", correct: true, explanation: "Pertandingan softball 7 inning." },
-            { text: "Pemain yang menjaga antara second base dan third base adalah short stop.", correct: true, explanation: "Shortstop posisi di area itu." },
-            { text: "Peralatan yang wajib digunakan pemain softball adalah sarung tangan (mitt).", correct: true, explanation: "Mitt untuk menangkap bola." },
-            { text: "Pukulan yang menyebabkan bola memantul ke tanah disebut fly ball.", correct: false, explanation: "Ground ball, fly ball adalah melambung." },
-            { text: "Bola yang melambung tinggi setelah dipukul disebut fly ball.", correct: true, explanation: "Fly ball = bola melambung." },
-            { text: "Pukulan lurus dan cepat disebut line drive.", correct: true, explanation: "Line drive pukulan datar cepat." },
-            { text: "Pemain yang menjaga base pertama adalah first baseman, pemain yang menjaga base ketiga adalah third baseman.", correct: true, explanation: "Sesuai posisi softball." },
-            { text: "Area tempat pemain menunggu giliran memukul disebut bullpen.", correct: false, explanation: "Disebut dugout, bullpen untuk pitcher cadangan." },
-            { text: "Pitcher melempar bola dari pitcher's plate.", correct: true, explanation: "Juga disebut rubber." },
-            { text: "Istilah double play berarti 2 out dalam satu permainan.", correct: true, explanation: "Dua mati dalam satu rangkaian." },
-            { text: "Pemain bertahan yang menangkap bola di udara menyebabkan out.", correct: true, explanation: "Fly out." },
-            { text: "Jarak antara pitcher dan home plate adalah sekitar 12–14 meter.", correct: true, explanation: "Jarak resmi ~13,11 meter." },
-            { text: "Lapangan softball terdiri dari dua bagian yaitu infield dan outfield.", correct: true, explanation: "Infield dan outfield." },
-            { text: "Sarung tangan untuk menangkap bola disebut glove (mitt juga benar).", correct: true, explanation: "Mitt atau glove." },
-            { text: "Area lemparan pitcher berbentuk persegi panjang.", correct: false, explanation: "Biasanya lingkaran atau setengah lingkaran." }
-        ];
+        (function() {
+            // ──────────────────────────────────────────────
+            // ALL QUESTIONS DATA (10 Categories)
+            // ──────────────────────────────────────────────
+            const quizData = {
+                'Pola Hidup Sehat': {
+                    icon: '🥗',
+                    questions: [
+                        { q: 'Yang dimaksud pola hidup sehat adalah...', o: ['Kebiasaan makan secara berlebihan',
+                                'Cara hidup yang memperhatikan kesehatan tubuh',
+                                'Hidup tanpa memperhatikan kebersihan', 'Semua makanan dikonsumsi tanpa batas',
+                                'Menghindari aktivitas fisik'
+                            ], a: 1 },
+                        { q: 'Salah satu manfaat pola hidup sehat adalah...', o: ['Tubuh mudah lelah',
+                                'Mudah terserang penyakit', 'Meningkatkan daya tahan tubuh',
+                                'Berat badan tidak terkontrol', 'Pola tidur terganggu'
+                            ], a: 2 },
+                        { q: 'Makanan yang dianjurkan untuk pola hidup sehat adalah...', o: ['Makanan cepat saji',
+                                'Cemilan tinggi gula', 'Sayur dan buah', 'Minuman bersoda', 'Gorengan berlebihan'
+                            ], a: 2 },
+                        { q: 'Lama tidur ideal untuk remaja adalah...', o: ['3–4 jam', '4–5 jam', '5–6 jam',
+                            '7–9 jam', '10–12 jam'], a: 3 },
+                        { q: 'Berikut ini yang termasuk minuman sehat adalah...', o: ['Kopi manis berlebihan',
+                                'Air mineral', 'Soda', 'Minuman energi', 'Sirup pekat'
+                            ], a: 1 },
+                        { q: 'Kebiasaan buruk yang harus dihindari adalah...', o: ['Merokok', 'Olahraga',
+                                'Minum air putih', 'Makan sayur', 'Tidur cukup'
+                            ], a: 0 },
+                        { q: 'Untuk menjaga kesehatan kulit, perlu...', o: ['Kurang minum', 'Tidak mandi',
+                                'Banyak konsumsi makanan berminyak', 'Minum air yang cukup', 'Begadang'
+                            ], a: 3 },
+                        { q: 'Vitamin yang banyak terdapat pada buah adalah...', o: ['Vitamin C', 'Vitamin K',
+                                'Vitamin B12', 'Vitamin D', 'Vitamin E'
+                            ], a: 0 },
+                        { q: 'Makanan tinggi protein bermanfaat untuk...', o: ['Merusak jaringan tubuh',
+                                'Menumbuhkan rambut lebih cepat', 'Membantu membangun dan memperbaiki jaringan',
+                                'Mengganggu pertumbuhan', 'Membuat tubuh lemah'
+                            ], a: 2 },
+                        { q: 'Berat badan ideal dapat dicapai dengan...', o: ['Makan berlebihan',
+                                'Mengonsumsi makanan cepat saji', 'Pola makan seimbang', 'Tidak sarapan',
+                                'Tidak berolahraga'
+                            ], a: 2 },
+                        { q: 'Kebersihan lingkungan harus dijaga agar...', o: ['Banyak nyamuk', 'Banyak sampah',
+                                'Menimbulkan penyakit', 'Lingkungan sehat', 'Air tercemar'
+                            ], a: 3 },
+                        { q: 'Aktivitas fisik penting karena dapat...', o: ['Membuat tubuh lemah',
+                                'Mengurangi energi', 'Meningkatkan kebugaran', 'Merusak otot',
+                            'Membuat cepat lelah'], a: 2 },
+                        { q: 'Berikut kebiasaan yang menunjang kesehatan jantung adalah...', o: [
+                                'Jarang bergerak', 'Banyak konsumsi lemak jenuh', 'Olahraga teratur',
+                            'Merokok', 'Begadang'], a: 2 },
+                        { q: 'Sarapan sehat bermanfaat untuk...', o: ['Menurunkan konsentrasi',
+                                'Mengganggu metabolisme', 'Menambah energi', 'Membuat cepat mengantuk',
+                                'Menurunkan daya tahan tubuh'
+                            ], a: 2 },
+                        { q: 'Mengonsumsi makanan terlalu asin dapat menyebabkan...', o: ['Tekanan darah tinggi',
+                                'Nafsu makan meningkat', 'Tulang kuat', 'Kulit cerah', 'Mata sehat'
+                            ], a: 0 },
+                        { q: 'Menggosok gigi dianjurkan minimal...', o: ['1 kali sehari', '2 kali sehari',
+                                '4 kali sehari', 'Seminggu sekali', 'Sebulan sekali'
+                            ], a: 1 },
+                        { q: 'Salah satu ciri pola hidup tidak sehat adalah...', o: ['Tidur cukup',
+                                'Olahraga teratur', 'Konsumsi junk food berlebihan', 'Minum air putih',
+                            'Makan sayur'], a: 2 },
+                        { q: 'Konsumsi gula berlebihan dapat menyebabkan...', o: ['Diabetes', 'Gigi kuat',
+                                'Tubuh ideal', 'Energi turun', 'Kesehatan meningkat'
+                            ], a: 0 },
+                        { q: 'Mencuci tangan bertujuan untuk...', o: ['Membersihkan debu',
+                                'Membunuh kuman penyebab penyakit', 'Menghilangkan bau tubuh',
+                                'Membuat kulit kering', 'Menghilangkan warna'
+                            ], a: 1 },
+                        { q: 'Istilah "4 sehat 5 sempurna" menekankan pentingnya...', o: ['Makanan berminyak',
+                                'Rokok', 'Nutrisi seimbang', 'Makanan cepat saji', 'Makan berlebihan'
+                            ], a: 2 },
+                        { q: 'Protein hewani dapat ditemukan pada...', o: ['Beras', 'Daging', 'Gandum', 'Buah',
+                                'Sayuran hijau'
+                            ], a: 1 },
+                        { q: 'Organ yang sangat dipengaruhi kebiasaan merokok adalah...', o: ['Hati', 'Paru-paru',
+                                'Lambung', 'Ginjal', 'Jantung'
+                            ], a: 1 },
+                        { q: 'Agar tubuh tidak dehidrasi, kita harus...', o: ['Banyak makan asin',
+                                'Minum air secukupnya', 'Kurang minum', 'Minum soda', 'Minum kopi berlebihan'
+                            ], a: 1 },
+                        { q: 'Salah satu keuntungan tidak begadang adalah...', o: ['Sulit berkonsentrasi',
+                                'Emosi tidak stabil', 'Tubuh lebih segar', 'Mudah sakit',
+                            'Mengantuk di sekolah'], a: 2 },
+                        { q: 'Latihan pernapasan sangat baik untuk...', o: ['Memperkuat paru-paru',
+                                'Merusak sistem pernapasan', 'Mengurangi oksigen', 'Menghilangkan energi',
+                                'Menurunkan konsentrasi'
+                            ], a: 0 },
+                        { q: 'Minuman yang baik setelah olahraga adalah...', o: ['Soda', 'Air putih',
+                                'Kopi pekat', 'Minuman tinggi gula', 'Teh manis pekat'
+                            ], a: 1 },
+                        { q: 'Kebiasaan mencuci sayur sebelum dimasak bertujuan untuk...', o: [
+                                'Menghilangkan serat', 'Membuang vitamin', 'Membersihkan kotoran dan pestisida',
+                                'Menambah rasa', 'Menghilangkan warna'
+                            ], a: 2 },
+                        { q: 'Olahraga yang paling mudah dilakukan adalah...', o: ['Lari/jalan kaki',
+                                'Renang di laut', 'Balap motor', 'Panjat tebing', 'Menyelam'
+                            ], a: 0 },
+                        { q: 'Salah satu tanda tubuh kurang istirahat adalah...', o: ['Tubuh terasa segar',
+                                'Mata terasa berat', 'Konsentrasi tinggi', 'Metabolisme lancar', 'Mood stabil'
+                            ], a: 1 },
+                        { q: 'Makanan yang baik dikonsumsi setiap hari adalah...', o: ['Gorengan',
+                                'Buah dan sayur', 'Kue manis', 'Mie instan', 'Permen'
+                            ], a: 1 },
+                        { q: 'Membersihkan rumah penting untuk...', o: ['Mengumpulkan debu',
+                                'Menyebarkan penyakit', 'Menjaga kesehatan keluarga', 'Membuat sarang nyamuk',
+                                'Menambah sampah'
+                            ], a: 2 },
+                        { q: 'Berjemur pagi hari bermanfaat untuk mendapatkan...', o: ['Vitamin D', 'Vitamin K',
+                                'Vitamin B12', 'Vitamin C', 'Vitamin A'
+                            ], a: 0 },
+                        { q: 'Perilaku hidup bersih dan sehat disingkat...', o: ['PHB', 'PHBS', 'HBS', 'PBS',
+                            'HSS'], a: 1 },
+                        { q: 'Tidur terlalu larut dapat menyebabkan...', o: ['Konsentrasi meningkat',
+                                'Tubuh segar', 'Sakit kepala', 'Fokus meningkat', 'Stamina meningkat'
+                            ], a: 2 },
+                        { q: 'Salah satu cara mencegah flu adalah...', o: ['Tidak mencuci tangan',
+                                'Mengonsumsi vitamin C', 'Berdekatan dengan orang sakit', 'Banyak begadang',
+                                'Kurang gizi'
+                            ], a: 1 },
+                        { q: 'Cara menjaga kesehatan mental adalah...', o: ['Mengisolasi diri',
+                                'Istirahat cukup dan berinteraksi sosial', 'Marah setiap hari', 'Tidak tidur',
+                                'Memendam stres'
+                            ], a: 1 },
+                        { q: 'Air putih baik diminum minimal...', o: ['1 gelas/hari', '2 gelas/hari',
+                                '8 gelas/hari', '15 gelas/hari', 'Tidak perlu minum'
+                            ], a: 2 },
+                        { q: 'Menghindari stres dapat dilakukan dengan...', o: ['Bermain game tanpa henti',
+                                'Meditasi', 'Begadang', 'Makan tidak teratur', 'Marah-marah'
+                            ], a: 1 },
+                        { q: 'Membaca label makanan penting untuk...', o: ['Mengetahui kandungan gizi',
+                                'Menambah rasa', 'Menghilangkan kandungan', 'Membuang nutrisi',
+                                'Mencari warna makanan'
+                            ], a: 0 },
+                        { q: 'Kebiasaan duduk terlalu lama dapat menyebabkan...', o: ['Otot kuat', 'Tubuh bugar',
+                                'Risiko penyakit jantung', 'Tulang semakin kokoh', 'Mata sehat'
+                            ], a: 2 },
+                        { q: 'Untuk menjaga kebersihan rambut, perlu...', o: ['Tidak keramas',
+                                'Keramas secara teratur', 'Menggunakan minyak goreng', 'Tidak menyisir',
+                                'Tidur tanpa mencuci rambut'
+                            ], a: 1 },
+                        { q: 'Hindari makan sebelum tidur karena...', o: ['Membuat tidur lebih nyenyak',
+                                'Menyebabkan sulit tidur', 'Membuat badan lebih ringan',
+                            'Menurunkan berat badan', 'Membuat perut kosong'], a: 1 },
+                        { q: 'Salah satu sumber karbohidrat adalah...', o: ['Daging sapi', 'Bayam', 'Nasi',
+                                'Telur', 'Susu'
+                            ], a: 2 },
+                        { q: 'Minum teh manis berlebihan dapat menyebabkan...', o: ['Kelebihan gula',
+                                'Gigi kuat', 'Mata sehat', 'Tulang kuat', 'Meningkatkan stamina'
+                            ], a: 0 },
+                        { q: 'Orang yang jarang berolahraga cenderung...', o: ['Lebih sehat', 'Mudah lelah',
+                                'Stamina meningkat', 'Metabolisme cepat', 'Kuat'
+                            ], a: 1 },
+                        { q: 'Contoh makanan berserat tinggi adalah...', o: ['Kentang goreng', 'Donat',
+                                'Roti putih', 'Pepaya', 'Keripik'
+                            ], a: 3 },
+                        { q: 'Mengatur pola makan berarti...', o: ['Makan sesuka hati', 'Makan tanpa jadwal',
+                                'Mengatur waktu dan jenis makanan', 'Tidak makan sama sekali',
+                            'Makan cepat saji'], a: 2 },
+                        { q: 'Salah satu tanda tubuh sehat adalah...', o: ['Mudah sakit', 'Tubuh lemas',
+                                'Tidak bertenaga', 'Nafsu makan baik', 'Tidak bisa tidur'
+                            ], a: 3 },
+                        { q: 'Cara menjaga kebugaran tubuh adalah...', o: ['Istirahat cukup dan olahraga',
+                                'Tidur larut tiap hari', 'Makan sembarangan', 'Tidak minum air', 'Tidak mandi'
+                            ], a: 0 }
+                    ]
+                },
+                'Kebugaran Jasmani': {
+                    icon: '💪',
+                    questions: [
+                        { q: 'Kebugaran jasmani adalah...', o: ['Keadaan tubuh yang lemah',
+                                'Kemampuan tubuh melakukan aktivitas tanpa kelelahan berlebihan',
+                                'Kondisi tubuh sakit', 'Tubuh tidak mampu bergerak', 'Aktivitas tanpa istirahat'
+                            ], a: 1 },
+                        { q: 'Tujuan utama kebugaran jasmani adalah...', o: ['Membuat tubuh mudah lelah',
+                                'Menurunkan daya tahan', 'Menjaga kesehatan dan meningkatkan stamina',
+                                'Menghindari olahraga', 'Mengurangi kekuatan otot'
+                            ], a: 2 },
+                        { q: 'Lari jarak jauh melatih...', o: ['Kekuatan', 'Kelincahan', 'Daya tahan',
+                                'Kecepatan', 'Kelenturan'
+                            ], a: 2 },
+                        { q: 'Sit-up dilakukan untuk melatih...', o: ['Pinggul', 'Otot perut', 'Otot kaki',
+                                'Otot lengan', 'Otot leher'
+                            ], a: 1 },
+                        { q: 'Kemampuan bergerak cepat dalam waktu singkat disebut...', o: ['Daya tahan',
+                                'Kekuatan', 'Kecepatan', 'Kelenturan', 'Ketepatan'
+                            ], a: 2 },
+                        { q: 'Contoh latihan kekuatan otot lengan adalah...', o: ['Sit-up', 'Pull-up',
+                                'Back-up', 'Jogging', 'Senam irama'
+                            ], a: 1 },
+                        { q: 'Faktor yang memengaruhi kebugaran adalah...', o: ['Pola makan', 'Jenis kelamin saja',
+                                'Rambut', 'Warna pakaian', 'Cuaca saja'
+                            ], a: 0 },
+                        { q: 'Berjalan di atas balok keseimbangan melatih...', o: ['Kecepatan', 'Keseimbangan',
+                                'Kekuatan', 'Kelincahan', 'Daya tahan'
+                            ], a: 1 },
+                        { q: 'Latihan yang berguna meningkatkan daya tahan jantung adalah...', o: ['Jogging',
+                                'Push-up', 'Sit-up', 'Back-up', 'Kayang'
+                            ], a: 0 },
+                        { q: 'Senam aerobik termasuk latihan...', o: ['Kekuatan', 'Daya tahan', 'Kelincahan',
+                                'Keseimbangan', 'Kecepatan'
+                            ], a: 1 },
+                        { q: 'Tes 12 menit Cooper digunakan untuk mengukur...', o: ['Kelincahan', 'Kecepatan',
+                                'Daya tahan kardiorespiras', 'Kelenturan', 'Kekuatan'
+                            ], a: 2 },
+                        { q: 'Contoh latihan keseimbangan adalah...', o: ['Handstand', 'Lari sprint', 'Sit-up',
+                                'Shuttle run', 'Skipping'
+                            ], a: 0 },
+                        { q: 'Contoh latihan kelenturan otot punggung adalah...', o: ['Sit-up', 'Back-up',
+                                'Pull-up', 'Sprint', 'Shuttle run'
+                            ], a: 1 },
+                        { q: 'Yang bukan termasuk unsur kebugaran jasmani adalah...', o: ['Kekuatan',
+                                'Daya tahan', 'Kecepatan', 'Kecantikan', 'Kelenturan'
+                            ], a: 3 },
+                        { q: 'Kemampuan mempertahankan posisi tubuh disebut...', o: ['Kelincahan', 'Keseimbangan',
+                                'Kecepatan', 'Daya tahan', 'Ketepatan'
+                            ], a: 1 },
+                        { q: 'Latihan skipping bermanfaat untuk...', o: ['Kekuatan jari', 'Melatih jantung',
+                                'Melatih telinga', 'Menambah tinggi badan langsung',
+                            'Mengurangi air dalam tubuh'], a: 1 },
+                        { q: 'Frekuensi latihan ideal dalam seminggu adalah...', o: ['1 kali', '2 kali',
+                                '3–5 kali', '10 kali', '15 kali'
+                            ], a: 2 },
+                        { q: 'Tes keseimbangan dapat dilakukan dengan...', o: ['Lari zig-zag', 'Berdiri satu kaki',
+                                'Sit-up', 'Lari jauh', 'Pull-up'
+                            ], a: 1 },
+                        { q: 'Push-up bermanfaat untuk melatih...', o: ['Otot lengan dan dada', 'Otot punggung',
+                                'Otot betis', 'Otot perut', 'Otot pinggul'
+                            ], a: 0 },
+                        { q: 'Melakukan pendinginan setelah olahraga berfungsi untuk...', o: [
+                                'Mengurangi risiko cedera', 'Menambah stres', 'Melemahkan otot',
+                                'Menurunkan daya tahan', 'Membuat lelah'
+                            ], a: 0 },
+                        { q: 'Istilah flexibility berarti...', o: ['Kelincahan', 'Kelenturan', 'Kekuatan',
+                                'Kecepatan', 'Keseimbangan'
+                            ], a: 1 },
+                        { q: 'Power adalah gabungan dari...', o: ['Kecepatan dan kelincahan',
+                                'Kekuatan dan kecepatan', 'Kelenturan dan kekuatan', 'Daya tahan dan kecepatan',
+                                'Ketepatan dan keseimbangan'
+                            ], a: 1 },
+                        { q: 'Latihan yang baik untuk membakar kalori adalah...', o: ['Duduk santai',
+                                'Berjalan cepat', 'Mendengarkan musik', 'Tidur', 'Menonton TV'
+                            ], a: 1 },
+                        { q: 'Latihan yang dilakukan berirama mengikuti musik disebut...', o: ['Zumba',
+                                'Stretching', 'Sprint', 'Shuttle run', 'Push-up'
+                            ], a: 0 },
+                        { q: 'Latihan interval merupakan...', o: ['Latihan tanpa istirahat',
+                                'Latihan diselingi istirahat', 'Latihan hanya malam hari', 'Latihan hanya untuk anak',
+                                'Latihan sekali sebulan'
+                            ], a: 1 },
+                        { q: 'Prinsip spesialisasi latihan berarti...', o: ['Latihan untuk semua orang sama',
+                                'Latihan harus sesuai tujuan', 'Latihan tanpa tujuan', 'Latihan sesuka hati',
+                                'Berlatih tanpa teknik'
+                            ], a: 1 },
+                        { q: 'Jogging sebaiknya dilakukan selama...', o: ['1–2 menit', '3–5 menit',
+                            '10–30 menit', '2 jam', '5 jam'], a: 2 },
+                        { q: 'Kemampuan menggerakkan persendian secara maksimal disebut...', o: ['Kelenturan',
+                                'Kecepatan', 'Kekuatan', 'Ketepatan', 'Kelincahan'
+                            ], a: 0 },
+                        { q: 'Pull-up melatih otot...', o: ['Perut', 'Betis', 'Dada', 'Lengan dan punggung',
+                                'Kaki'
+                            ], a: 3 },
+                        { q: 'Lari sprint 100 meter termasuk latihan...', o: ['Power', 'Kecepatan', 'Kelenturan',
+                                'Ketepatan', 'Daya tahan'
+                            ], a: 1 },
+                        { q: 'Latihan yang dapat meningkatkan kekuatan otot kaki adalah...', o: ['Squat',
+                                'Sit-up', 'Push-up', 'Sit and reach', 'Handstand'
+                            ], a: 0 },
+                        { q: 'Contoh aktivitas untuk meningkatkan keseimbangan adalah...', o: ['Kayang',
+                                'Berdiri di atas papan titian', 'Lari sprint', 'Sit-up', 'Pull-up'
+                            ], a: 1 },
+                        { q: 'Tes sit and reach bertujuan mengukur...', o: ['Kelincahan',
+                                'Kelenturan pinggang', 'Kecepatan', 'Daya tahan', 'Kekuatan'
+                            ], a: 1 },
+                        { q: 'Untuk meningkatkan daya tahan jantung, latihan yang cocok adalah...', o: ['Renang',
+                                'Sit-up', 'Kayang', 'Push-up', 'Handstand'
+                            ], a: 0 },
+                        { q: 'Kesehatan jantung dipengaruhi oleh...', o: ['Makanan sehat dan olahraga', 'Begadang',
+                                'Rokok', 'Malas bergerak', 'Stres berat'
+                            ], a: 0 },
+                        { q: 'Olahraga yang dilakukan rutin dapat...', o: ['Menurunkan kebugaran',
+                                'Mempercepat kelelahan', 'Meningkatkan daya tahan tubuh', 'Membuat tubuh sakit',
+                                'Menurunkan energi'
+                            ], a: 2 },
+                        { q: 'Istilah agility berarti...', o: ['Ketepatan', 'Kelincahan', 'Kekuatan', 'Kecepatan',
+                                'Kelenturan'
+                            ], a: 1 },
+                        { q: 'Tujuan pemanasan sebelum olahraga adalah...', o: ['Membuat otot kaku',
+                                'Mencegah cedera dan mempersiapkan tubuh', 'Membuat tubuh lemas',
+                                'Mengurangi pernapasan', 'Menghilangkan konsentrasi'
+                            ], a: 1 }
+                    ]
+                },
+                'Softball': {
+                    icon: '🥎',
+                    questions: [
+                        { q: 'Softball adalah permainan beregu yang dimainkan oleh...', o: ['4 pemain', '6 pemain',
+                                '7 pemain', '9 pemain', '12 pemain'
+                            ], a: 3 },
+                        { q: 'Permainan softball berasal dari negara...', o: ['Inggris', 'Jepang', 'Kanada',
+                                'Amerika Serikat', 'Australia'
+                            ], a: 3 },
+                        { q: 'Lapangan softball berbentuk...', o: ['Lingkaran', 'Persegi', 'Layang-layang',
+                                'Persegi panjang', 'Setengah lingkaran (diamond)'
+                            ], a: 4 },
+                        { q: 'Pemain yang melempar bola disebut...', o: ['Catcher', 'Pitcher', 'Batter', 'Runner',
+                                'Fielder'
+                            ], a: 1 },
+                        { q: 'Pemain yang menangkap lemparan pitcher adalah...', o: ['Catcher', 'Batter', 'Runner',
+                                'Shortstop', 'Baseman'
+                            ], a: 0 },
+                        { q: 'Pemukul bola disebut...', o: ['Runner', 'Pitcher', 'Batter', 'Baseman', 'Keeper'],
+                            a: 2 },
+                        { q: 'Jumlah base dalam softball adalah...', o: ['2', '3', '4', '5', '6'], a: 2 },
+                        { q: 'Base yang digunakan untuk memulai dan mengakhiri lari adalah...', o: ['Second base',
+                                'Third base', 'Home plate', 'First base', 'Outer base'
+                            ], a: 2 },
+                        { q: 'Teknik melempar bola dalam softball disebut...', o: ['Pitching', 'Batting',
+                                'Running', 'Sliding', 'Catching'
+                            ], a: 0 },
+                        { q: 'Teknik memegang pemukul disebut...', o: ['Grip', 'Swing', 'Pitch', 'Slide',
+                            'Step'], a: 0 },
+                        { q: 'Pemukul berdiri di area yang disebut...', o: ['Home plate', 'Batter box',
+                                'Pitcher plate', 'First base', 'Field zone'
+                            ], a: 1 },
+                        { q: 'Pitcher berdiri di...', o: ['Pitcher circle', 'Second base', 'Home plate',
+                                'Runner lane', 'Third base'
+                            ], a: 0 },
+                        { q: 'Bola yang dilemparkan pitcher harus berada di area...', o: ['Outside zone',
+                                'Running zone', 'Strike zone', 'Catch zone', 'Base zone'
+                            ], a: 2 },
+                        { q: 'Jika bola dilempar dan tidak sesuai strike zone disebut...', o: ['Fault', 'Error',
+                                'Ball', 'Out', 'Dead'
+                            ], a: 2 },
+                        { q: 'Jika batter mendapat empat ball, maka ia berhak...', o: ['Keluar lapangan', 'Menang',
+                                'Jalan ke first base', 'Kembali ke dugout', 'Mendapat out'
+                            ], a: 2 },
+                        { q: 'Pemain yang berlari antar base disebut...', o: ['Catcher', 'Fielder', 'Runner',
+                                'Batter', 'Pitcher'
+                            ], a: 2 },
+                        { q: 'Lemparan bola setelah bola dipukul disebut...', o: ['Hit', 'Pitch', 'Throw',
+                                'Fielding', 'Catch'
+                            ], a: 2 },
+                        { q: 'Pergantian regu antara menyerang dan bertahan disebut...', o: ['Inning', 'Passing',
+                                'Timing', 'Change', 'Rotate'
+                            ], a: 0 },
+                        { q: 'Jumlah inning standar dalam pertandingan softball adalah...', o: ['3', '5', '7', '9',
+                                '11'
+                            ], a: 2 },
+                        { q: 'Pemain yang menjaga area antara 2nd base dan 3rd base adalah...', o: ['Shortstop',
+                                'First baseman', 'Catcher', 'Pitcher', 'Runner'
+                            ], a: 0 },
+                        { q: 'Teknik menangkap bola disebut...', o: ['Running', 'Swinging', 'Catching', 'Sliding',
+                                'Bouncing'
+                            ], a: 2 },
+                        { q: 'Peralatan yang wajib digunakan pemain softball adalah...', o: ['Helm',
+                                'Sarung tangan (glove)', 'Sepatu lari', 'Pelindung kepala', 'Topi'
+                            ], a: 1 },
+                        { q: 'Pukulan yang menyebabkan bola memantul ke tanah disebut...', o: ['Fly ball',
+                                'Slide ball', 'Ground ball', 'Upper ball', 'Line drive'
+                            ], a: 2 },
+                        { q: 'Bola yang melambung tinggi setelah dipukul disebut...', o: ['Ground ball',
+                                'Fly ball', 'Hit strike', 'Line drive', 'Base ball'
+                            ], a: 1 },
+                        { q: 'Pukulan lurus dan cepat disebut...', o: ['Fly ball', 'Home run', 'Line drive',
+                                'Foul ball', 'Sliding hit'
+                            ], a: 2 },
+                        { q: 'Jika bola dipukul hingga melewati pagar lapangan disebut...', o: ['Foul ball',
+                                'Ground ball', 'Strike', 'Home run', 'Dead ball'
+                            ], a: 3 },
+                        { q: 'Pemain bertahan di belakang batter adalah...', o: ['Runner', 'Pitcher', 'Catcher',
+                                'Shortstop', 'Fielder'
+                            ], a: 2 },
+                        { q: 'Sliding dilakukan untuk...', o: ['Menghindari cedera', 'Mempercepat pukulan',
+                                'Mempercepat mencapai base', 'Menghindari bola', 'Menendang bola'
+                            ], a: 2 },
+                        { q: 'Pemain yang menjaga base pertama adalah...', o: ['First baseman', 'Shortstop',
+                                'Catcher', 'Pitcher', 'Runner'
+                            ], a: 0 },
+                        { q: 'Pemain yang menjaga base ketiga adalah...', o: ['Second baseman', 'Third baseman',
+                                'Shortstop', 'Catcher', 'Right fielder'
+                            ], a: 1 },
+                        { q: 'Tujuan utama permainan softball adalah...', o: ['Mengumpulkan bola', 'Menjaga base',
+                                'Mendapatkan poin dengan berlari melewati base hingga home plate',
+                            'Melakukan strike', 'Mencuri bola'], a: 2 },
+                        { q: 'Area tempat pemain menunggu giliran bermain disebut...', o: ['Dugout', 'Base',
+                                'Plate', 'Field', 'Outfield'
+                            ], a: 0 },
+                        { q: 'Pitcher melempar bola dari...', o: ['Home plate', 'First base', 'Pitcher plate',
+                                '3rd base', 'Foul line'
+                            ], a: 2 },
+                        { q: 'Runner dinyatakan "safe" apabila...', o: ['Tersentuh bola', 'Tersingkir',
+                                'Berhasil sampai base sebelum bola', 'Tidak memukul bola', 'Menolak berlari'
+                            ], a: 2 },
+                        { q: 'Istilah "double play" berarti...', o: ['Pemain memukul dua kali',
+                                'Dua out dalam satu permainan', 'Dua kali strike', 'Dua kali bola keluar',
+                                'Dua home run'
+                            ], a: 1 },
+                        { q: 'Pemain bertahan yang menangkap bola di udara menyebabkan...', o: ['Safe', 'Strike',
+                                'Out', 'Home run', 'Ball'
+                            ], a: 2 },
+                        { q: 'Jarak antara pitcher dan home plate adalah sekitar...', o: ['5 meter', '10 meter',
+                                '12–14 meter', '20 meter', '30 meter'
+                            ], a: 2 },
+                        { q: 'Lapangan softball terdiri dari dua bagian yaitu...', o: ['Infield dan basefield',
+                                'Outfield dan playoff', 'Infield dan outfield', 'Homefield dan runoff',
+                                'Strike zone dan foul zone'
+                            ], a: 2 },
+                        { q: 'Alat pemukul bola disebut...', o: ['Bat', 'Stick', 'Paddle', 'Punch', 'Grip'],
+                            a: 0 },
+                        { q: 'Sarung tangan untuk menangkap bola disebut...', o: ['Bat', 'Mitt/Glove', 'Shield',
+                                'Catch pad', 'Soft pad'
+                            ], a: 1 },
+                        { q: 'Area lemparan pitcher berbentuk...', o: ['Kotak', 'Segitiga', 'Lingkaran',
+                                'Persegi panjang', 'Belah ketupat'
+                            ], a: 2 },
+                        { q: 'Jika batter berhasil memukul dan mencapai semua base kembali ke home disebut...', o: [
+                                'Safe', 'Out', 'Single', 'Home run', 'Triple'
+                            ], a: 3 },
+                        { q: 'Tim dinyatakan menang jika...', o: ['Paling sedikit melakukan pukulan',
+                                'Paling banyak melakukan strike', 'Mendapatkan skor paling banyak',
+                                'Runner paling lambat', 'Memiliki fielder terbanyak'
+                            ], a: 2 }
+                    ]
+                },
+                'Bola Voli': {
+                    icon: '🏐',
+                    questions: [
+                        { q: 'Teknik dasar untuk memulai permainan bola voli adalah...', o: ['Passing', 'Smash',
+                                'Servis', 'Block', 'Toss'
+                            ], a: 2 },
+                        { q: 'Servis bawah pada bola voli dilakukan dengan cara...', o: [
+                                'Memukul bola dari atas kepala', 'Melambungkan bola tinggi',
+                                'Memukul bola dari bawah pinggang', 'Menendang bola', 'Melempar bola ke lawan'
+                            ], a: 2 },
+                        { q: 'Passing bawah pada bola voli menggunakan bagian...', o: ['Telapak tangan',
+                                'Punggung tangan', 'Lengan bagian bawah', 'Ujung jari', 'Pundak'
+                            ], a: 2 },
+                        { q: 'Passing atas pada bola voli menggunakan...', o: ['Telapak tangan', 'Dua jari',
+                                'Punggung tangan', 'Ujung jari (finger tips)', 'Siku'
+                            ], a: 3 },
+                        { q: 'Gerakan memukul bola keras ke arah lawan pada bola voli disebut...', o: ['Block',
+                                'Servis', 'Smash', 'Passing', 'Dig'
+                            ], a: 2 },
+                        { q: 'Teknik menghalau serangan lawan di dekat net pada bola voli adalah...', o: ['Passing',
+                                'Block', 'Smash', 'Servis', 'Dig'
+                            ], a: 1 },
+                        { q: 'Tujuan passing pada bola voli adalah...', o: ['Mencetak poin', 'Menghalau bola',
+                                'Mengatur serangan', 'Mengakhiri permainan', 'Menunda waktu'
+                            ], a: 2 },
+                        { q: 'Posisi tangan pada passing bawah pada bola voli adalah...', o: ['Tangan terpisah',
+                                'Tangan mengepal satu dan dibungkus tangan lain', 'Tangan di atas kepala',
+                                'Tangan lurus ke samping', 'Tangan menutup wajah'
+                            ], a: 1 },
+                        { q: 'Servis atas biasanya digunakan pada bola voli untuk...', o: ['Pemula',
+                                'Serangan kuat', 'Mengulur waktu', 'Menjaga stamina', 'Pemain bertahan'
+                            ], a: 1 },
+                        { q: 'Pada passing atas pada bola voli, posisi jari membentuk...', o: ['L', 'W', 'Segitiga',
+                                'Gagang', 'Kotak'
+                            ], a: 2 },
+                        { q: 'Dalam smash pada bola voli, awalan dilakukan dengan...', o: ['Melompat langsung',
+                                'Berlari pendek', 'Berjalan mundur', 'Melompat ke samping', 'Berjalan lambat'
+                            ], a: 1 },
+                        { q: 'Sentuhan pada smash pada bola voli dilakukan dengan...', o: ['Ujung jari',
+                                'Punggung tangan', 'Telapak tangan', 'Lengan', 'Siku'
+                            ], a: 2 },
+                        { q: 'Teknik block pada bola voli dilakukan dengan...', o: ['Satu kaki',
+                                'Kedua tangan diangkat ke atas', 'Siku ditekuk', 'Melompat mundur', 'Berputar'
+                            ], a: 1 },
+                        { q: 'Passing yang dilakukan untuk menerima servis pada bola voli disebut...', o: ['Dump',
+                                'Dig', 'Set up', 'Serve receive', 'Toss'
+                            ], a: 3 },
+                        { q: 'Gerakan mengontrol bola rendah pada bola voli disebut...', o: ['Dig', 'Dump', 'Toss',
+                                'Block', 'Serve'
+                            ], a: 0 },
+                        { q: 'Teknik mengirim bola ke smasher pada bola voli disebut...', o: ['Dump', 'Dig',
+                                'Setting', 'Block', 'Serve'
+                            ], a: 2 },
+                        { q: 'Bola voli dimainkan oleh...', o: ['3 orang', '5 orang', '6 orang', '7 orang',
+                                '11 orang'
+                            ], a: 2 },
+                        { q: 'Teknik dasar pertama yang harus dikuasai pemula pada bola voli adalah...', o: [
+                                'Smash', 'Passing', 'Block', 'Dive', 'Overhand serve'
+                            ], a: 1 },
+                        { q: 'Pada bola voli bola dinyatakan keluar jika...', o: ['Mengenai pemain',
+                                'Mengenai garis samping luar', 'Masuk area lawan', 'Mengenai net',
+                            'Dipukul dengan keras'], a: 1 },
+                        { q: 'Gerakan memukul bola dengan satu tangan di atas kepala pada bola voli disebut...', o: [
+                                'Passing bawah', 'Smash', 'Servis atas', 'Block', 'Lob'
+                            ], a: 2 },
+                        { q: 'Saat melakukan passing atas pada bola voli, posisi kaki adalah...', o: ['Rapat',
+                                'Sejajar', 'Terbuka selebar bahu', 'Satu di belakang', 'Menyilang'
+                            ], a: 2 },
+                        { q: 'Pada block pada bola voli, pemain harus...', o: ['Melompat mundur',
+                                'Menekuk lutut terlalu dalam', 'Berdiri di garis serang',
+                                'Menghadang bola tanpa menyentuh net', 'Mendorong net'
+                            ], a: 3 },
+                        { q: 'Pada bola voli passing bawah efektif digunakan untuk menerima...', o: ['Bola lambat',
+                                'Bola tinggi', 'Servis kuat', 'Setting', 'Smash ringan'
+                            ], a: 2 },
+                        { q: 'Teknik untuk menyelamatkan bola hampir jatuh ke lantai pada bola voli adalah...', o: [
+                                'Spike', 'Dig', 'Setting', 'Serve', 'Block'
+                            ], a: 1 },
+                        { q: 'Posisi tangan saat setting bola pada bola voli adalah...', o: ['Kaku', 'Menyilang',
+                                'Menghadap ke bawah', 'Membentuk mangkuk', 'Mengepal'
+                            ], a: 3 },
+                        { q: 'Tujuan block pada bola voli adalah...', o: ['Mengulur waktu',
+                                'Menghalangi serangan lawan', 'Membuat bola tinggi', 'Memberi kesempatan tim',
+                                'Menggiring bola'
+                            ], a: 1 },
+                        { q: 'Smash pada bola voli harus diarahkan ke...', o: ['Zona kosong lawan', 'Arah wasit',
+                                'Luar lapangan', 'Pemain libero', 'Pemain sendiri'
+                            ], a: 0 },
+                        { q: 'Pada bola voli bola tidak boleh disentuh oleh...', o: [
+                                '1 pemain 2 kali berturut-turut', 'Pemain libero', 'Pemain depan',
+                            'Pemain belakang', 'Setter'], a: 0 },
+                        { q: 'Servis jump serve pada bola voli dilakukan dengan cara...', o: ['Berdiri diam',
+                                'Melompat saat memukul bola', 'Berlari mundur', 'Loncat ke belakang',
+                                'Memantulkan bola terlebih dulu'
+                            ], a: 1 },
+                        { q: 'Kesalahan saat block pada bola voli adalah...', o: ['Bola masuk',
+                                'Melompat terlalu tinggi', 'Menyentuh net', 'Tangan lurus', 'Dua orang block'
+                            ], a: 2 },
+                        { q: 'Bola hasil servis pada bola voli harus...', o: ['Mengenai net', 'Masuk area lawan',
+                                'Dipukul oleh 2 pemain', 'Ditangkap', 'Di-block dulu'
+                            ], a: 1 },
+                        { q: 'Teknik pukulan yang menipu lawan pada bola voli disebut...', o: ['Smash', 'Dump',
+                                'Float serve', 'Set up', 'Block'
+                            ], a: 1 },
+                        { q: 'Serve float pada bola voli menghasilkan bola yang...', o: ['Berputar', 'Lambat',
+                                'Tanpa putaran', 'Memantul', 'Melengkung'
+                            ], a: 2 },
+                        { q: 'Passing bawah pada bola voli dilakukan ketika bola...', o: ['Tinggi', 'Rendah',
+                                'Di atas kepala', 'Jatuh ke belakang', 'Di net'
+                            ], a: 1 },
+                        { q: 'Posisi pemain yang bertugas sebagai pengatur serangan pada bola voli adalah...', o: [
+                                'Libero', 'Setter', 'Tosser', 'Spiker', 'Blocker'
+                            ], a: 1 },
+                        { q: 'Teknik bertahan dari smash lawan pada bola voli disebut...', o: ['Serve', 'Passing',
+                                'Block', 'Dump', 'Set'
+                            ], a: 2 },
+                        { q: 'Saat melakukan servis pada bola voli, pemain harus berada...', o: [
+                                'Di depan garis serang', 'Di belakang garis belakang', 'Di samping lapangan',
+                                'Di depan net', 'Di tengah lapangan'
+                            ], a: 1 },
+                        { q: 'Jumlah pemain dalam satu tim bola voli di lapangan adalah...', o: ['5 orang',
+                                '6 orang', '7 orang', '9 orang', '12 orang'
+                            ], a: 1 },
+                        { q: 'Jumlah maksimal pemain cadangan dalam satu tim pada bola voli adalah...', o: ['4', '5',
+                                '6', '7', '8'
+                            ], a: 2 },
+                        { q: 'Perubahan posisi pemain ketika berpindah servis pada bola voli disebut...', o: [
+                                'Switching', 'Rotasi', 'Relay', 'Shifting', 'Transition'
+                            ], a: 1 },
+                        { q: 'Permainan bola voli dimainkan dalam sistem...', o: ['1 set', '2 set', '3 set',
+                                '4 set', '5 set'
+                            ], a: 4 },
+                        { q: 'Sebuah tim voli dianggap menang jika memperoleh...', o: ['2 set', '3 set', '4 set',
+                                '5 set', '1 set'
+                            ], a: 1 },
+                        { q: 'Skor maksimal setiap set pada bola voli adalah...', o: ['21', '23', '25', '27',
+                            '30'], a: 2 },
+                        { q: 'Servis pertama pada bola voli ditentukan melalui...', o: ['Pemain tertua',
+                                'Pemain termuda', 'Undian', 'Wasit', 'Pelatih'
+                            ], a: 2 },
+                        { q: 'Pemain yang memiliki seragam berbeda pada bola voli disebut...', o: ['Setter',
+                                'Spiker', 'Libero', 'Captain', 'Blocker'
+                            ], a: 2 },
+                        { q: 'Libero pada bola voli tidak boleh melakukan...', o: ['Dig', 'Serve', 'Receive',
+                                'Passing bawah', 'Defense'
+                            ], a: 1 },
+                        { q: 'Pada bola voli pelanggaran kontak net terjadi ketika...', o: ['Bola menyentuh lantai',
+                                'Pemain menyentuh net', 'Bola keluar', 'Servis gagal',
+                            'Smash tidak melewati net'], a: 1 },
+                        { q: 'Double hit pada bola voli adalah pelanggaran ketika...', o: ['Memukul bola dua tangan',
+                                'Bola bermain dua kali dalam satu tim', 'Pemain menyentuh bola dua kali berturut-turut',
+                                'Bola memantul dua kali', 'Bola keluar'
+                            ], a: 2 },
+                        { q: 'Foot fault pada bola voli terjadi ketika...', o: ['Kaki pemain menyentuh net',
+                                'Kaki pemain keluar lapangan', 'Kaki melewati garis servis saat menyervis',
+                                'Kaki salah melangkah', 'Kaki menendang bola'
+                            ], a: 2 },
+                        { q: 'Serve pada bola voli yang dilakukan sambil melompat adalah...', o: ['Underhand serve',
+                                'Side serve', 'Jump serve', 'Long serve', 'Line serve'
+                            ], a: 2 },
+                        { q: 'Pemain voli menyerang bola dari area depan disebut...', o: ['Back row attack',
+                                'Front row attack', 'Drive attack', 'Side attack', 'Low attack'
+                            ], a: 1 },
+                        { q: 'Jika bola menyentuh garis pada bola voli, maka bola dianggap...', o: ['Out', 'Fault',
+                                'In', 'Dead', 'Replay'
+                            ], a: 2 },
+                        { q: 'Kesalahan servis bola voli disebut juga...', o: ['Fault', 'Violation', 'Failure',
+                                'Foul', 'Miss'
+                            ], a: 0 },
+                        { q: 'Bola pada bola voli boleh dimainkan maksimal … kali dalam satu tim', o: ['1', '2', '3',
+                                '4', '5'
+                            ], a: 2 },
+                        { q: 'Pelanggaran net pada bola voli terjadi jika...', o: [
+                                'Bola menyentuh net saat passing', 'Pemain menyentuh net dengan tubuh',
+                                'Bola melintang', 'Servis menyentuh net', 'Bola memantul di net'
+                            ], a: 1 },
+                        { q: 'Istilah permainan ulang pada bola voli adalah...', o: ['Repoint', 'Replay', 'Restart',
+                                'Refresh', 'Repeat'
+                            ], a: 1 },
+                        { q: 'Set kelima pada bola voli dimainkan sampai angka…', o: ['21', '25', '15', '30',
+                            '11'], a: 2 },
+                        { q: 'Servis pada bola voli dilakukan dari…', o: ['Depan garis 3 meter', 'Depan net',
+                                'Belakang garis end line', 'Sisi lapangan', 'Sebelah wasit'
+                            ], a: 2 },
+                        { q: 'Jika servis tidak melewati net pada bola voli maka…', o: ['Point ulang', 'Sah',
+                                'Pelanggaran', 'Bola mati', 'Free ball'
+                            ], a: 2 },
+                        { q: 'Rotasi pada bola voli dilakukan ketika…', o: ['Timeout', 'Bola dead',
+                                'Pergantian servis', 'Smash', 'Blocking'
+                            ], a: 2 }
+                    ]
+                },
+                'Sepak Bola': {
+                    icon: '⚽',
+                    questions: [
+                        { q: 'Teknik dasar untuk menghentikan bola pada sepak bola disebut…', o: ['Shooting',
+                                'Dribbling', 'Passing', 'Stopping', 'Heading'
+                            ], a: 3 },
+                        { q: 'Teknik mengoper pada sepak bola dengan jarak pendek menggunakan…', o: ['Punggung kaki',
+                                'Kura-kura kaki', 'Kaki bagian dalam', 'Tumit', 'Telapak kaki'
+                            ], a: 2 },
+                        { q: 'Teknik menendang bola keras dan jauh menggunakan…', o: ['Kaki bagian dalam', 'Tumit',
+                                'Punggung kaki', 'Ujung jari', 'Telapak kaki'
+                            ], a: 2 },
+                        { q: 'Menggiring bola pada sepak bola bertujuan untuk…', o: ['Menghentikan bola',
+                                'Mengoper bola', 'Menghindari lawan', 'Menjaga gawang', 'Melakukan throw-in'
+                            ], a: 2 },
+                        { q: 'Teknik menahan bola pada sepak bola disebut…', o: ['Dribbling', 'Control', 'Passing',
+                                'Shooting', 'Heading'
+                            ], a: 1 },
+                        { q: 'Menggiring bola pada sepak bola dilakukan menggunakan…', o: ['Betis', 'Lutut',
+                                'Punggung kaki', 'Tangan', 'Dada'
+                            ], a: 2 },
+                        { q: 'Teknik menendang bola ke arah gawang disebut…', o: ['Passing', 'Shooting', 'Receive',
+                                'Dribbling', 'Tackling'
+                            ], a: 1 },
+                        { q: 'Teknik menyundul bola disebut…', o: ['Handball', 'Cross', 'Heading', 'Passing',
+                                'Blocking'
+                            ], a: 2 },
+                        { q: 'Menyundul bola menggunakan bagian…', o: ['Dahi', 'Hidung', 'Ubun-ubun', 'Dagu',
+                                'Kening atas'
+                            ], a: 0 },
+                        { q: 'Passing jarak jauh pada sepak bola disebut…', o: ['Short pass', 'Long pass',
+                                'Through pass', 'Wall pass', 'Under pass'
+                            ], a: 1 },
+                        { q: 'Teknik merebut bola pada sepak bola dari lawan disebut…', o: ['Tackling', 'Passing',
+                                'Shooting', 'Heading', 'Juggling'
+                            ], a: 0 },
+                        { q: 'Teknik memantulkan bola pada sepak bola secara terus menerus disebut…', o: [
+                                'Dribbling', 'Controlling', 'Juggling', 'Passing', 'Blocking'
+                            ], a: 2 },
+                        { q: 'Teknik mengangkat bola pada sepak bola melewati lawan disebut…', o: ['Long pass',
+                                'Chip', 'Shooting', 'Crossing', 'Sliding'
+                            ], a: 1 },
+                        { q: 'Cara menghentikan bola menggunakan telapak kaki disebut…', o: ['Trap', 'Sole control',
+                                'Foot stop', 'Block', 'Push'
+                            ], a: 1 },
+                        { q: 'Teknik menghentikan bola menggunakan paha disebut…', o: ['Chest control',
+                                'Knee control', 'Thigh control', 'Sole control', 'Body stop'
+                            ], a: 2 },
+                        { q: 'Bagian kaki untuk passing terarah jarak pendek ialah…', o: ['Kura-kura kaki',
+                                'Kaki bagian dalam', 'Punggung kaki', 'Tumit', 'Kaki bagian luar'
+                            ], a: 1 },
+                        { q: 'Teknik menggiring bola pada sepak bola dengan cepat disebut…', o: ['Close dribbling',
+                                'Fast dribbling', 'Total dribbling', 'Break dribble', 'Light dribble'
+                            ], a: 1 },
+                        { q: 'Mengontrol bola menggunakan dada disebut…', o: ['Chest control', 'Body control',
+                                'Upper control', 'Balance control', 'Shoulder control'
+                            ], a: 0 },
+                        { q: 'Teknik operan satu-dua pada sepak bola disebut…', o: ['Wall pass', 'Through pass',
+                                'Cross pass', 'Back pass', 'Chip pass'
+                            ], a: 0 },
+                        { q: 'Teknik mengoper bola pada sepak bola menembus pertahanan disebut…', o: ['Wall pass',
+                                'Through pass', 'Long pass', 'Chip pass', 'Back pass'
+                            ], a: 1 },
+                        { q: 'Teknik merebut bola dengan sliding disebut…', o: ['Blocking', 'Tackling',
+                                'Sliding tackle', 'Body charge', 'Intercept'
+                            ], a: 2 },
+                        { q: 'Teknik menendang bola melengkung disebut…', o: ['Curve kick', 'Chip kick', 'Lob kick',
+                                'Volley kick', 'Drive kick'
+                            ], a: 0 },
+                        { q: 'Gerakan memutar tubuh untuk menghindari lawan disebut…', o: ['Roll over', 'Over step',
+                                'Spin move', 'Turn back', 'Side step'
+                            ], a: 2 },
+                        { q: 'Teknik menangkap bola oleh kiper disebut…', o: ['Holding', 'Catching', 'Grabbing',
+                                'Blocking', 'Punching'
+                            ], a: 1 },
+                        { q: 'Teknik menjatuhkan diri untuk menahan bola disebut…', o: ['Diving', 'Slide', 'Catch',
+                                'Roll', 'Stop'
+                            ], a: 0 },
+                        { q: 'Teknik menahan bola menggunakan kaki bagian luar disebut…', o: ['Outside stop',
+                                'Inside stop', 'Sole stop', 'Heel stop', 'Joint stop'
+                            ], a: 0 },
+                        { q: 'Teknik menggiring bola dengan bagian luar kaki disebut…', o: ['Inside dribble',
+                                'Outside dribble', 'Sole dribble', 'Heel dribble', 'Front dribble'
+                            ], a: 1 },
+                        { q: 'Teknik operan silang ke depan pada sepak bola disebut…', o: ['Chip', 'Cross', 'Curve',
+                                'Flip', 'Drive'
+                            ], a: 1 },
+                        { q: 'Teknik menerima bola pada sepak bola menggunakan perut disebut…', o: ['Soft control',
+                                'Stomach control', 'Belly control', 'Chest control', 'Body control'
+                            ], a: 2 },
+                        { q: 'Teknik dribbling zig-zag digunakan untuk…', o: ['Menendang bola',
+                                'Melatih kontrol bola', 'Menjaga stamina', 'Mengoper bola', 'Menyundul bola'
+                            ], a: 1 },
+                        { q: 'Teknik menghentikan bola dengan telapak kaki biasanya digunakan pada…', o: [
+                                'Lapangan rumput', 'Futsal', 'Sepak bola pantai', 'Mini soccer', 'Street soccer'
+                            ], a: 1 },
+                        { q: 'Teknik menyapu bola ketika bertahan disebut…', o: ['Sweep', 'Clean', 'Slide',
+                                'Tackle', 'Clear'
+                            ], a: 4 },
+                        { q: 'Teknik membelokkan bola dengan luar kaki disebut…', o: ['Outside curve', 'Outer pass',
+                                'Reverse spin', 'Shift curve', 'Side curve'
+                            ], a: 0 },
+                        { q: 'Teknik operan pendek cepat dari jarak dekat pada sepak bola disebut…', o: [
+                                'Short pass', 'Wall pass', 'Quick pass', 'Touch pass', 'One-two pass'
+                            ], a: 3 },
+                        { q: 'Jumlah pemain dalam satu tim sepak bola saat pertandingan dimulai adalah…', o: ['9',
+                                '10', '11', '12', '13'
+                            ], a: 2 },
+                        { q: 'Jumlah wasit utama dalam pertandingan sepak bola adalah…', o: ['1', '2', '3', '4',
+                            '5'], a: 0 },
+                        { q: 'Pemain yang bertugas menjaga gawang disebut…', o: ['Stopper', 'Libero', 'Kiper',
+                                'Winger', 'Striker'
+                            ], a: 2 },
+                        { q: 'Tendangan awal dilakukan di…', o: ['Garis gawang', 'Garis samping', 'Lingkaran tengah',
+                                'Kotak penalti', 'Sudut lapangan'
+                            ], a: 2 },
+                        { q: 'Pergantian pemain yang diperbolehkan dalam sepak bola profesional maksimal...', o: [
+                                '2', '3', '4', '5', '6'
+                            ], a: 3 },
+                        { q: 'Bola dinyatakan "in play" ketika…', o: ['Bola berhenti', 'Bola memantul keluar',
+                                'Wasit meniup peluit', 'Bola bergulir di dalam lapangan',
+                            'Bola ditendang terlalu keras'], a: 3 },
+                        { q: 'Tendangan sudut diberikan ketika…', o: ['Bola keluar oleh kiper',
+                                'Bola keluar oleh pemain bertahan melalui garis gawang',
+                                'Bola keluar oleh pemain penyerang melalui garis gawang',
+                                'Bola keluar melalui garis samping', 'Bola menyentuh wasit'
+                            ], a: 1 },
+                        { q: 'Ukuran panjang lapangan sepak bola standar internasional adalah…', o: ['90–100 m',
+                                '100–110 m', '110–120 m', '80–90 m', '120–140 m'
+                            ], a: 1 },
+                        { q: 'Kick-off dilakukan ketika…', o: ['Babak dimulai', 'Terjadi pelanggaran',
+                                'Bola keluar lapangan', 'Wasit tidak melihat kejadian', 'Pemain cedera'
+                            ], a: 0 },
+                        { q: 'Throw-in dilakukan ketika bola…', o: ['Masuk gawang', 'Keluar garis samping',
+                                'Keluar garis gawang', 'Terjadi pelanggaran', 'Pemain melakukan handball'
+                            ], a: 1 },
+                        { q: 'Penalti diberikan jika…', o: ['Pelanggaran terjadi di tengah lapangan',
+                                'Pelanggaran terjadi di area kiper lawan',
+                                'Pelanggaran terjadi di luar lapangan',
+                            'Pelanggaran dilakukan di dalam kotak penalti', 'Pelanggaran dilakukan setelah gol'],
+                            a: 3 },
+                        { q: 'Tim yang mencetak gol lebih banyak dinyatakan…', o: ['Seri', 'Kalah', 'Menang',
+                                'Tanding ulang', 'Hukuman'
+                            ], a: 2 },
+                        { q: 'Peluit wasit pada sepak bola menandakan…', o: ['Bola bergulir',
+                                'Pertandingan berhenti atau dimulai', 'Pemain boleh berlari',
+                                'Pemain boleh mengganti sepatu', 'Suporter boleh masuk lapangan'
+                            ], a: 1 },
+                        { q: 'Pergantian pemain pada sepak bola dilakukan di…', o: ['Garis gawang', 'Garis tengah',
+                                'Sudut lapangan', 'Kotak penalti', 'Mana saja'
+                            ], a: 1 },
+                        { q: 'Tendangan bebas langsung berarti bola…', o: ['Tidak boleh diarahkan ke gawang',
+                                'Harus diarahkan ke samping', 'Bisa langsung diarahkan ke gawang',
+                                'Hanya boleh dioper pendek', 'Tidak boleh disentuh lawan'
+                            ], a: 2 },
+                        { q: 'Tendangan bebas tidak langsung berarti bola harus…', o: [
+                                'Dioper dulu oleh dua kali sentuhan', 'Dioper ke belakang', 'Ditendang ke samping',
+                                'Ditangkap kiper', 'Ditendang dua orang'
+                            ], a: 0 },
+                        { q: 'Tendangan gawang dilakukan oleh...', o: ['Pemain belakang', 'Kapten', 'Kiper', 'Wasit',
+                                'Striker'
+                            ], a: 2 },
+                        { q: 'Tendangan sudut dilakukan dari…', o: ['Tengah lapangan', 'Kotak penalti',
+                                'Pinggir lapangan', 'Sudut lapangan', 'Mana saja'
+                            ], a: 3 },
+                        { q: 'Assist adalah…', o: ['Tendangan gawang', 'Umpan yang menghasilkan gol',
+                                'Tembakan meleset', 'Pelanggaran', 'Penalti'
+                            ], a: 1 },
+                        { q: 'Wasit tambahan pada sepak bola berada di…', o: ['Tengah lapangan', 'Belakang gawang',
+                                'Pinggir tribun', 'Ruang ganti', 'Kursi cadangan'
+                            ], a: 1 },
+                        { q: 'Lama pertandingan sepak bola standar adalah…', o: ['70 menit', '80 menit', '90 menit',
+                                '100 menit', '60 menit'
+                            ], a: 2 },
+                        { q: 'Pada sepak bola pertandingan dibagi menjadi…', o: ['1 babak', '2 babak', '3 babak',
+                                '4 babak', '5 babak'
+                            ], a: 1 },
+                        { q: 'Lama satu babak pada sepak bola adalah…', o: ['30 menit', '35 menit', '40 menit',
+                                '45 menit', '50 menit'
+                            ], a: 3 },
+                        { q: 'Istirahat di antara dua babak pada sepak bola adalah…', o: ['5 menit', '10 menit',
+                                '12 menit', '15 menit', '20 menit'
+                            ], a: 3 },
+                        { q: 'Waktu tambahan disebut…', o: ['Extra game', 'Time bonus', 'Injury time', 'Extra kick',
+                                'Overtime'
+                            ], a: 2 },
+                        { q: 'Jika pertandingan seri pada babak gugur pada sepak bola, dilakukan…', o: ['Pengundian',
+                                'Jalan cepat', 'Tambahan waktu', 'Tendangan bebas', 'Tendangan sudut'
+                            ], a: 2 },
+                        { q: 'Lama waktu tambahan (extra time) pada sepak bola adalah…', o: ['2 × 10 menit',
+                                '2 × 15 menit', '2 × 20 menit', '30 menit langsung', '45 menit langsung'
+                            ], a: 1 },
+                        { q: 'Adu penalti pada sepak bola dilakukan jika…', o: [
+                                'Wasit tidak melihat pelanggaran', 'Waktu tambahan tetap seri',
+                            'Pemain banyak cedera', 'Penonton masuk lapangan', 'Gol terlalu banyak'], a: 1 },
+                        { q: 'Pada sepak bola Injury time diberikan untuk…', o: ['Menambah gol', 'Mengurangi waktu',
+                                'Mengganti pemain', 'Mengganti bola', 'Menghitung waktu terhenti'
+                            ], a: 4 },
+                        { q: 'Pada sepak bola Waktu pertandingan dihitung oleh…', o: ['Penonton', 'Pelatih',
+                                'Wasit keempat', 'Kiper', 'Kapten'
+                            ], a: 2 },
+                        { q: 'Handball terjadi ketika…', o: ['Bola menyentuh kepala', 'Bola menyentuh kaki',
+                                'Bola menyentuh tangan sengaja', 'Bola tidak menyentuh pemain', 'Bola masuk gawang'
+                            ], a: 2 },
+                        { q: 'Offside terjadi ketika pemain…', o: ['Terlalu dekat dengan pelatih',
+                                'Ada di belakang bola',
+                                'Lebih dekat ke gawang lawan dibanding bola dan bek terakhir',
+                                'Berdiri di setengah lapangan sendiri', 'Melakukan throw-in'
+                            ], a: 2 },
+                        { q: 'Tekel keras dari belakang biasanya berakibat…', o: ['Lemparan ke dalam',
+                                'Tendangan sudut', 'Kartu kuning atau merah', 'Tendangan gawang',
+                            'Pergantian pemain'], a: 2 },
+                        { q: 'Simulasi (diving) pada sepak bola adalah…', o: ['Mencetak gol', 'Berlari cepat',
+                                'Berpura-pura dilanggar', 'Mengoper bola', 'Melakukan lemparan'
+                            ], a: 2 },
+                        { q: 'Pelanggaran dalam kotak penalti berakibat…', o: ['Offside', 'Tendangan sudut',
+                                'Tendangan gawang', 'Tendangan penalti', 'Lemparan ke dalam'
+                            ], a: 3 },
+                        { q: 'Kartu kuning pada sepak bola diberikan untuk…', o: ['Pelanggaran ringan',
+                                'Pelanggaran sedang atau peringatan keras', 'Pelanggaran fatal', 'Tendangan bebas',
+                                'Tindak kriminal'
+                            ], a: 1 },
+                        { q: 'Kartu merah pada sepak bola diberikan jika…', o: ['Tidak mencetak gol',
+                                'Telat masuk lapangan', 'Melakukan kekerasan atau dua kartu kuning',
+                                'Mengganti pelatih', 'Bola terlalu keras'
+                            ], a: 2 },
+                        { q: 'Mendorong lawan pada sepak bola termasuk…', o: ['Offside', 'Pelanggaran',
+                                'Pergantian', 'Lemparan', 'Peringatan ringan'
+                            ], a: 1 },
+                        { q: 'Menarik baju lawan pada sepak bola termasuk…', o: ['Permainan fair',
+                                'Tindakan ilegal', 'Tendangan gawang', 'Tendangan bebas tidak langsung', 'Gol'
+                            ], a: 1 },
+                        { q: 'Hukuman untuk handball adalah…', o: ['Tendangan bebas', 'Throw-in', 'Tendangan gawang',
+                                'Tendangan sudut', 'Lemparan bebas'
+                            ], a: 0 },
+                        { q: 'Pada sepak bola pelanggaran berat biasanya berakibat…', o: ['Offside', 'Penalti',
+                                'Kartu merah', 'Replay', 'Lemparan ke dalam'
+                            ], a: 2 },
+                        { q: 'Offside tidak berlaku saat menerima bola dari…', o: ['Operan jauh', 'Tendangan gawang',
+                                'Operan pendek', 'Umpan silang', 'Tembakan'
+                            ], a: 1 },
+                        { q: 'Pada sepak bola tindakan kasar pada wasit berakibat…', o: ['Peringatan', 'Penalti',
+                                'Kartu merah langsung', 'Tendangan sudut', 'Pergantian pemain'
+                            ], a: 2 },
+                        { q: 'Menghalangi kiper melepas bola adalah…', o: ['Legal', 'Offside', 'Pelanggaran',
+                                'Throw-in', 'Gol'
+                            ], a: 2 },
+                        { q: 'Tackling harus dilakukan untuk…', o: ['Mengambil bola tanpa kontak berbahaya',
+                                'Menjatuhkan lawan', 'Mendorong pemain', 'Menghentikan waktu',
+                            'Mengambil bola dengan tangan'], a: 0 },
+                        { q: 'Menghentikan peluang emas lawan dengan sengaja disebut…', o: ['Fair play',
+                                'DOGSO (Denying Obvious Goal-Scoring Opportunity)', 'Offside', 'Clean tackle',
+                                'Replay'
+                            ], a: 1 },
+                        { q: 'Mengangkat kaki terlalu tinggi pada sepak bola disebut…', o: ['Jumping',
+                                'High kicking', 'Dangerous play', 'Offside', 'Goal kick'
+                            ], a: 2 },
+                        { q: 'Pemain yang terkena dua kartu kuning pada sepak bola akan…', o: ['Tetap bermain',
+                                'Mendapat penalti', 'Dikeluarkan dari pertandingan', 'Mendapat kartu hitam',
+                                'Ganti posisi'
+                            ], a: 2 }
+                    ]
+                },
+                'Bola Basket': {
+                    icon: '🏀',
+                    questions: [
+                        { q: 'Teknik mengoper bola dari dada ke dada pada bola basket disebut…', o: ['Bounce pass',
+                                'Chest pass', 'Overhead pass', 'Baseball pass', 'Side pass'
+                            ], a: 1 },
+                        { q: 'Operan yang dilakukan dengan memantulkan bola ke lantai pada bola basket disebut…', o: [
+                                'Bounce pass', 'Chest pass', 'Hook pass', 'Speed pass', 'Jump pass'
+                            ], a: 0 },
+                        { q: 'Dribbling pada bola basket dilakukan dengan menggunakan bagian tangan…', o: [
+                                'Telapak tangan', 'Punggung tangan', 'Pergelangan tangan', 'Ujung jari (finger tips)',
+                                'Siku'
+                            ], a: 3 },
+                        { q: 'Dribbling tinggi pada bola basket digunakan ketika…', o: ['Bertahan', 'Mengulur waktu',
+                                'Melakukan serangan cepat', 'Menutup ruang', 'Menerima rebound'
+                            ], a: 2 },
+                        { q: 'Dribbling rendah pada bola basket biasanya digunakan untuk…', o: [
+                                'Menembus pertahanan', 'Fast break', 'Lay up', 'Free throw', 'Rebound'
+                            ], a: 0 },
+                        { q: 'Kesalahan umum saat dribbling pada bola basket adalah…', o: ['Menggunakan jari-jari',
+                                'Mengganti arah dribble', 'Double dribble', 'Melihat sekitar lapangan',
+                                'Menggiring rendah saat dijaga'
+                            ], a: 2 },
+                        { q: 'Shooting adalah teknik untuk...', o: ['Mengoper bola', 'Mengambil bola pantul',
+                                'Menggiring bola', 'Mencetak poin', 'Menjaga lawan'
+                            ], a: 3 },
+                        { q: 'Shooting yang dilakukan sambil melompat pada bola basket disebut…', o: ['Set shoot',
+                                'Jump shot', 'Hook shot', 'Lay up shoot', 'Fade away'
+                            ], a: 1 },
+                        { q: 'Tembakan dari jarak dekat menggunakan dua langkah pada bola basket disebut…', o: [
+                                'Hook shot', 'Lay up', 'Power shot', 'Underhand shot', 'Bank shot'
+                            ], a: 1 },
+                        { q: 'Faktor yang menentukan keberhasilan shooting pada bola basket adalah…', o: [
+                                'Warna seragam', 'Arah angin', 'Kestabilan tubuh', 'Kecepatan lari', 'Tinggi ring'
+                            ], a: 2 },
+                        { q: 'Pada bola basket rebound adalah usaha untuk…', o: ['Menembak bola', 'Menggiring bola',
+                                'Mengambil bola pantul dari ring', 'Mengoper bola', 'Melakukan block'
+                            ], a: 2 },
+                        { q: 'Rebound pada bola basket terbagi menjadi dua jenis, yaitu…', o: ['Atas dan bawah',
+                                'Depan dan belakang', 'Kiri dan kanan', 'Offense dan defense', 'Pusat dan sayap'
+                            ], a: 3 },
+                        { q: 'Posisi tubuh saat melakukan rebound adalah…', o: ['Tangan menutup mata', 'Berdiri pasif',
+                                'Siap melompat dan tangan ke atas', 'Kaki rapat', 'Badan condong ke belakang'
+                            ], a: 2 },
+                        { q: 'Pivot pada bola basket adalah gerakan…', o: ['Melompat tinggi', 'Menggiring bola',
+                                'Memutar badan dengan satu kaki tetap', 'Menembak bola', 'Merebut bola'
+                            ], a: 2 },
+                        { q: 'Kaki yang tetap berada di lantai saat pivot pada bola basket disebut…', o: [
+                                'Support foot', 'Run foot', 'Stand foot', 'Pivot foot', 'Free foot'
+                            ], a: 3 },
+                        { q: 'Tujuan pivot pada bola basket adalah…', o: ['Menambah kecepatan lari',
+                                'Menghindari traveling', 'Menemukan ruang passing atau shooting',
+                                'Mengubah arah dribble', 'Melakukan block'
+                            ], a: 2 },
+                        { q: 'Dribbling pada bola basket tidak boleh dilakukan dengan…', o: ['Jari-jari',
+                                'Posisi badan rendah', 'Kepala tegak melihat sekitar', 'Telapak tangan',
+                            'Gerakan cepat'], a: 3 },
+                        { q: 'Pada bola basket ketika bola memantul keluar ring setelah tembakan, situasi ini disebut…',
+                            o: ['Passing', 'Shooting', 'Blocking', 'Rebound', 'Steal'], a: 3 },
+                        { q: 'Lay up merupakan teknik menembakkan bola ke ring yang dilakukan dari jarak…', o: [
+                                'Jauh', 'Sedang', 'Dekat', 'Luar garis 3 poin', 'Dari belakang ring'
+                            ], a: 2 },
+                        { q: 'Pada lay up kanan, pemain melakukan lompatan menggunakan kaki…', o: ['Kanan', 'Kiri',
+                                'Keduanya', 'Bergantian', 'Bebas'
+                            ], a: 1 },
+                        { q: 'Jumlah langkah yang sah sebelum melakukan lay up setelah berhenti menggiring bola adalah…',
+                            o: ['Satu langkah', 'Dua langkah', 'Tiga langkah', 'Empat langkah', 'Tanpa langkah'],
+                            a: 1 },
+                        { q: 'Pada lay up kiri, bola dilepaskan menggunakan tangan…', o: ['Kanan', 'Kiri',
+                                'Dua tangan', 'Tangan dominan', 'Tangan bebas'
+                            ], a: 1 },
+                        { q: 'Bagian papan pantul yang menjadi sasaran utama saat melakukan lay up adalah…', o: [
+                                'Tengah papan', 'Pinggir atas papan', 'Garis bawah papan', 'Kotak kecil pada papan',
+                                'Bagian samping kanan papan'
+                            ], a: 3 },
+                        { q: 'Urutan langkah lay up kanan yang benar adalah…', o: [
+                                'Langkah kiri – kanan – lompat', 'Langkah kanan – kiri – lompat',
+                                'Lompat – langkah kanan – langkah kiri', 'Langkah bersamaan lalu lompat',
+                                'Tidak menggunakan langkah'
+                            ], a: 1 },
+                        { q: 'Kesalahan yang sering terjadi saat melakukan lay up adalah…', o: [
+                                'Menggunakan papan pantul', 'Mengambil dua langkah', 'Melepaskan bola dengan cepat',
+                                'Traveling', 'Membidik kotak papan'
+                            ], a: 3 },
+                        { q: 'Lay up biasanya dilakukan ketika...', o: ['Tip-off terjadi', 'Bola keluar lapangan',
+                                'Pemain mendapat fast break', 'Saat defense ketat', 'Dalam situasi free throw'
+                            ], a: 2 },
+                        { q: 'Tujuan latihan ritme langkah dalam lay up adalah…', o: [
+                                'Menghasilkan lompatan lebih tinggi', 'Menambah kekuatan dribble',
+                                'Meningkatkan kecepatan sprint', 'Menjaga keseimbangan dan timing tembakan',
+                                'Mengurangi jumlah operan'
+                            ], a: 3 },
+                        { q: 'Saat melakukan lay up, posisi badan yang benar adalah…', o: [
+                                'Menghadap samping lapangan', 'Condong ke belakang', 'Membelakangi ring',
+                                'Condong sedikit ke depan mengikuti arah lompatan', 'Berdiri tegak tanpa melompat'
+                            ], a: 3 },
+                        { q: 'Pada bola basket jumlah pemain dalam satu tim yang bermain di lapangan adalah…', o: [
+                                '3', '4', '5', '6', '7'
+                            ], a: 2 },
+                        { q: 'Jumlah pemain cadangan maksimal dalam satu tim pada bola basket adalah…', o: ['3', '5',
+                                '6', '7', '8'
+                            ], a: 3 },
+                        { q: 'Lama waktu permainan bola basket menurut FIBA adalah…', o: ['2 × 20 menit',
+                                '4 × 8 menit', '4 × 10 menit', '4 × 12 menit', '3 × 15 menit'
+                            ], a: 2 },
+                        { q: 'Pemain pada bola basket harus melewati garis tengah lapangan dalam waktu…', o: [
+                                '3 detik', '5 detik', '8 detik', '10 detik', '12 detik'
+                            ], a: 2 },
+                        { q: 'Pelanggaran 3 detik pada bola basket terjadi ketika…', o: [
+                                'Pemain menggiring bola lebih dari tiga langkah', 'Pemain bertahan tidak bergerak',
+                                'Pemain berada di area kunci terlalu lama',
+                                'Pemain gagal membawa bola lewat garis tengah', 'Pemain melakukan screen ilegal'
+                            ], a: 2 },
+                        { q: 'Traveling pada bola basket terjadi jika pemain…', o: ['Menyerang tanpa mengoper',
+                                'Bergerak tanpa menggiring bola', 'Berdiri terlalu lama', 'Menginjak garis batas',
+                                'Melakukan dunk terlalu tinggi'
+                            ], a: 1 },
+                        { q: 'Lamanya time-out pada pertandingan FIBA adalah…', o: ['30 detik', '45 detik',
+                                '60 detik', '90 detik', '120 detik'
+                            ], a: 2 },
+                        { q: 'Jumlah wasit dalam satu pertandingan resmi pada bola basket adalah…', o: ['1', '2', '3',
+                                '4', '5'
+                            ], a: 2 },
+                        { q: 'Pada bola basket pelanggaran personal foul terjadi jika pemain…', o: [
+                                'Menghentikan dribble', 'Menyentuh lawan secara ilegal', 'Mengambil time-out',
+                                'Menggiring terlalu cepat', 'Menginjak garis'
+                            ], a: 1 },
+                        { q: 'Pelanggaran teknikal foul pada bola basket diberikan kepada…', o: [
+                                'Pemain yang melakukan traveling', 'Pemain yang menahan bola terlalu lama',
+                                'Pemain yang bersikap tidak sopan', 'Pemain yang menggiring dua tangan',
+                                'Pemain yang melakukan screen'
+                            ], a: 2 },
+                        { q: 'Defensive foul pada bola basket terjadi ketika…', o: ['Penyerang menabrak lawan',
+                                'Pemain bertahan menghalangi secara ilegal', 'Pemain bertahan tidak melihat lawan',
+                                'Pemain penyerang tidak menggiring', 'Pemain melakukan passing ke luar'
+                            ], a: 1 },
+                        { q: 'Offense foul pada bola basket adalah…', o: ['Foul oleh pemain bertahan',
+                                'Foul oleh pemain penyerang', 'Foul oleh pelatih', 'Foul oleh cadangan',
+                                'Foul dari waist'
+                            ], a: 1 },
+                        { q: 'Setiap quarter pada bola basket berlangsung selama…', o: ['7 menit', '8 menit',
+                                '9 menit', '10 menit', '12 menit'
+                            ], a: 3 },
+                        { q: 'Free throw pada bola basket diberikan setelah…', o: ['Offside terjadi',
+                                'Bola keluar lapangan', 'Pelanggaran shooting foul', 'Traveling', 'Double dribble'
+                            ], a: 2 },
+                        { q: 'Jumlah angka dalam satu kali free throw pada bola basket adalah…', o: ['1', '2', '3',
+                                '4', '5'
+                            ], a: 0 },
+                        { q: 'Pada bola basket pelatih hanya boleh berdiri di…', o: ['Lapangan', 'Daerah lawan',
+                                'Meja wasit', 'Coaching box', 'Pojok lapangan'
+                            ], a: 3 },
+                        { q: 'Bola dinyatakan "in play" pada bola basket ketika…', o: ['Wasit meniup peluit',
+                                'Bola masih berada di lapangan', 'Pemain menyentuh lawan',
+                                'Bola berhenti di tangan pemain', 'Time-out berlangsung'
+                            ], a: 1 },
+                        { q: 'Bola dinyatakan keluar pada bola basket jika…', o: ['Menyentuh papan',
+                                'Menyentuh pemain', 'Menyentuh garis atau luar garis', 'Memantul terlalu tinggi',
+                                'Tidak dipantulkan'
+                            ], a: 2 },
+                        { q: 'Pemain yang melakukan 5 personal foul pada bola basket, maka…', o: [
+                                'Dikeluarkan dari pertandingan', 'Mendapat kartu kuning', 'Mendapat kartu merah',
+                                'Diberi waktu istirahat', 'Bermain terus'
+                            ], a: 0 },
+                        { q: 'Panjang lapangan bola basket standar FIBA adalah…', o: ['20 m', '24 m', '26 m',
+                            '28 m', '30 m'], a: 3 },
+                        { q: 'Lebar lapangan bola basket adalah…', o: ['12 m', '13 m', '14 m', '15 m', '18 m'],
+                            a: 3 },
+                        { q: 'Tinggi ring basket adalah…', o: ['2,5 m', '2,75 m', '3,00 m', '3,05 m', '3,10 m'],
+                            a: 3 },
+                        { q: 'Substitusi pemain pada bola basket dapat dilakukan saat...', o: ['Permainan berjalan',
+                                'Bola masuk ring', 'Wasit menghentikan permainan', 'Pemain sedang dribbling',
+                                'Lawan melakukan tembakan'
+                            ], a: 2 },
+                        { q: 'Tembakan 3 angka pada bola basket diberikan ketika…', o: ['Tembakan mengenai papan',
+                                'Pemain menembak dari dalam garis', 'Pemain menembak dari luar garis 3 poin',
+                                'Pemain melakukan lay up', 'Pemain memantulkan bola'
+                            ], a: 2 },
+                        { q: 'Pelanggaran unsportmanlike foul pada bola basket adalah…', o: ['Kesalahan tak sengaja',
+                                'Tidak sengaja menyentuh lawan', 'Tindakan kasar atau tidak sportif',
+                                'Terlalu lama memegang bola', 'Salah passing'
+                            ], a: 2 },
+                        { q: 'Bola "dead ball" pada bola basket terjadi ketika…', o: ['Bola memantul',
+                                'Wasit meniup peluit', 'Pemain dribble', 'Pemain menembak', 'Waktu berjalan'
+                            ], a: 1 },
+                        { q: 'Penguasaan bola yang kembali ke belakang garis tengah lapangan pada bola basket adalah…',
+                            o: ['Backcourt violation', 'Double dribble', 'Personal foul', 'Blocking foul',
+                                'Unsportsmanlike foul'
+                            ], a: 0 },
+                        { q: 'Bola hasil lemparan ke dalam pada bola basket harus disentuh pemain dalam waktu…', o: [
+                                '3 detik', '4 detik', '5 detik', '8 detik', '10 detik'
+                            ], a: 2 },
+                        { q: 'Pemain boleh kembali masuk lapangan pada bola basket setelah…', o: ['Bola masuk ring',
+                                'Wasit mengizinkan', 'Time-out selesai', 'Pemain lawan keluar',
+                            'Menyelesaikan dribble'], a: 1 },
+                        { q: 'Tujuan jump ball pada bola basket pada awal pertandingan adalah…', o: ['Menambah poin',
+                                'Mengawali permainan', 'Mengganti pemain', 'Menentukan foul',
+                            'Mengakhiri permainan'], a: 1 },
+                        { q: 'Pada bola basket pemain yang berbicara kasar kepada wasit bisa dikenai…', o: [
+                                'Personal foul', 'Double dribble', 'Technical foul', 'Travel', 'Violation biasa'
+                            ], a: 2 },
+                        { q: 'Pertandingan dinyatakan dimulai pada bola basket ketika…', o: [
+                                'Wasit membunyikan peluit', 'Bola dilempar wasit pada jump ball', 'Pemain berlari',
+                                'Peluit akhir dibunyikan', 'Kapten tim hadir'
+                            ], a: 1 }
+                    ]
+                },
+                'Lari / Atletik': {
+                    icon: '🏃',
+                    questions: [
+                        { q: 'Start yang digunakan pada nomor lari jarak pendek adalah...', o: ['Start berdiri',
+                                'Start jongkok', 'Start melayang', 'Start duduk',
+                            'Start berdiri dengan aba-aba'], a: 1 },
+                        { q: 'Nomor lari jarak pendek termasuk kategori jarak...', o: ['50–100 m', '100–200 m',
+                                '100–400 m', '200–800 m', '800–1500 m'
+                            ], a: 2 },
+                        { q: 'Aba-aba pada start lari jarak pendek adalah...', o: ['Siap – Mulai', 'Siap – Ya',
+                                'Bersedia – Siap – Ya', 'Bersedia – Siap – Mulai', 'Berdiri – Siap – Mulai'
+                            ], a: 2 },
+                        { q: 'Fungsi balok start pada lari jarak pendek adalah...', o: ['Mengatur kecepatan',
+                                'Menambah panjang langkah', 'Memaksimalkan dorongan awal', 'Menambah stamina',
+                                'Menentukan irama langkah'
+                            ], a: 2 },
+                        { q: 'Lari yang menempuh jarak di atas 1500 m disebut...', o: ['Lari estafet',
+                                'Lari jarak menengah', 'Lari jalan cepat', 'Lari jarak jauh', 'Lari marathon'
+                            ], a: 3 },
+                        { q: 'Nomor lari jarak menengah adalah...', o: ['100–200 m', '200–400 m', '400–800 m',
+                                '800–1500 m', '1500–5000 m'
+                            ], a: 3 },
+                        { q: 'Teknik pernapasan pada lari jarak jauh dilakukan melalui...', o: ['Mulut saja',
+                                'Hidung saja', 'Hidung dan mulut', 'Jantung', 'Pundak'
+                            ], a: 2 },
+                        { q: 'Dalam lari estafet, alat yang digunakan untuk berpindah adalah...', o: ['Bola',
+                                'Tongkat', 'Pita', 'Panji', 'Bendera kecil'
+                            ], a: 1 },
+                        { q: 'Penyerahan tongkat dalam estafet dilakukan di dalam...', o: ['Zona awalan',
+                                'Zona aman', 'Zona bebas', 'Zona penyerahan', 'Zona finis'
+                            ], a: 3 },
+                        { q: 'Panjang zona penyerahan tongkat adalah...', o: ['10 m', '20 m', '30 m', '40 m',
+                            '50 m'], a: 1 },
+                        { q: 'Lari marathon menempuh jarak...', o: ['5 km', '10 km', '21 km', '42,195 km',
+                            '50 km'], a: 3 },
+                        { q: 'Gerakan lengan saat berlari berfungsi untuk...', o: ['Menaikkan badan',
+                                'Mengimbangi gerak kaki', 'Memperpendek langkah', 'Memperlambat laju',
+                                'Menjaga berat badan'
+                            ], a: 1 },
+                        { q: 'Dalam start jongkok, lutut kaki belakang berada pada...', o: ['Belakang kaki depan',
+                                'Depan kaki depan', 'Di samping kaki depan', 'Menempel pada tangan', 'Menekan tanah'
+                            ], a: 0 },
+                        { q: 'Start melayang dilakukan untuk nomor...', o: ['Lari marathon', 'Lari jarak pendek',
+                                'Lari gawang', 'Lari jarak jauh', 'Lari estafet pelari ke-2 sampai ke-4'
+                            ], a: 4 },
+                        { q: 'Organisasi atletik internasional adalah...', o: ['FIBA', 'FIFA', 'IAAF', 'IOC',
+                            'IBA'], a: 2 },
+                        { q: 'Pelari yang melanggar garis lintasan akan...', o: ['Diulang start',
+                                'Diberi tambahan waktu', 'Diberi peringatan', 'Didiskualifikasi',
+                                'Diberi pengurangan poin'
+                            ], a: 3 },
+                        { q: 'Pada lari jarak pendek, badan condong ke arah...', o: ['Belakang', 'Samping',
+                                'Depan', 'Atas', 'Bawah'
+                            ], a: 2 },
+                        { q: 'Teknik finish dengan dada ke depan disebut...', o: ['Shoulder finish', 'Chest finish',
+                                'Bow finish', 'Leaning finish', 'Sprint finish'
+                            ], a: 1 },
+                        { q: 'Saat berlari, posisi kaki menumpu pada bagian...', o: ['Tumit', 'Ujung kaki',
+                                'Punggung kaki', 'Telapak kaki depan', 'Kedua tumit'
+                            ], a: 3 },
+                        { q: 'Start yang tidak sah disebut...', o: ['Start cepat', 'Start lambat',
+                                'Start terlambat', 'Let up', 'False start'
+                            ], a: 4 },
+                        { q: 'Dalam lari jarak jauh, langkah kaki cenderung...', o: ['Pendek', 'Panjang dan stabil',
+                                'Melompat', 'Berayun tinggi', 'Digeser'
+                            ], a: 1 },
+                        { q: 'Lari gawang termasuk nomor...', o: ['Jalan cepat', 'Lari jarak pendek',
+                                'Lari teknik', 'Lari lompat', 'Lari gaya bebas'
+                            ], a: 1 },
+                        { q: 'Jumlah pelari estafet dalam satu regu adalah...', o: ['2', '3', '4', '5', '6'], a: 2 },
+                        { q: 'Dalam lari, ayunan lengan berasal dari...', o: ['Bahu', 'Tangan', 'Siku', 'Pinggang',
+                                'Perut'
+                            ], a: 0 },
+                        { q: 'Salah satu kesalahan saat berlari adalah...', o: ['Langkah rileks', 'Badan condong',
+                                'Mengangkat lutut', 'Mengunci pergelangan kaki', 'Ayunan tangan seimbang'
+                            ], a: 3 },
+                        { q: 'Lapangan lari disebut...', o: ['Court', 'Ring', 'Track', 'Field', 'Arena'], a: 2 },
+                        { q: 'Nomor lari 10.000 m termasuk kategori...', o: ['Pendek', 'Menengah', 'Jauh',
+                                'Extra panjang', 'Sprint'
+                            ], a: 2 },
+                        { q: 'Pada lari cepat, frekuensi langkah cenderung...', o: ['Lambat', 'Sedang', 'Cepat',
+                                'Tidak teratur', 'Melompat'
+                            ], a: 2 },
+                        { q: 'Dalam estafet, teknik menerima tongkat disebut...', o: ['Take over', 'Pass over',
+                                'Rolling', 'Jump over', 'Slide'
+                            ], a: 0 },
+                        { q: 'Dalam lari marathon, pelari harus menjaga...', o: ['Kecepatan awal tinggi',
+                                'Kecepatan stabil', 'Start melayang', 'Ritme cepat', 'Sprint terus menerus'
+                            ], a: 1 },
+                        { q: 'Tujuan pemanasan sebelum berlari adalah...', o: ['Menghemat tenaga',
+                                'Meningkatkan suhu tubuh', 'Mengurangi napas', 'Menambah berat badan',
+                                'Memperlambat gerakan'
+                            ], a: 1 },
+                        { q: 'Lari 400 meter termasuk kategori...', o: ['Pendek', 'Menengah', 'Jauh', 'Marathon',
+                                'Jalan cepat'
+                            ], a: 1 },
+                        { q: 'Lari estafet 4 x 100 m disebut juga...', o: ['Relay pendek', 'Relay menengah',
+                                'Relay jauh', 'Relay sedang', 'Relay bebas'
+                            ], a: 0 },
+                        { q: 'Start untuk lari jarak menengah adalah...', o: ['Jongkok', 'Duduk', 'Berdiri',
+                                'Melayang', 'Tidur'
+                            ], a: 2 },
+                        { q: 'Waktu yang ideal untuk menerima tongkat adalah saat...', o: ['Sedang berhenti',
+                                'Kecepatan sama', 'Pelari depan berhenti', 'Pelari belakang berhenti',
+                            'Pelari berjalan'], a: 1 },
+                        { q: 'Dalam lomba, lari dilakukan pada lintasan...', o: ['Lurus', 'Melengkung',
+                                'Lurus dan melengkung', 'Menanjak', 'Menurun'
+                            ], a: 2 },
+                        { q: 'Pelari marathon perlu memperhatikan...', o: ['Kecepatan start', 'Irama napas',
+                                'Teknik melompat', 'Langkah pendek', 'Ayunan tinggi'
+                            ], a: 1 },
+                        { q: 'Penggunaan spike bertujuan untuk...', o: ['Mengurangi berat', 'Menambah grip',
+                                'Menambah kecepatan awal', 'Menambah tinggi badan',
+                            'Mengurangi panjang langkah'], a: 1 },
+                        { q: 'Pelari cepat biasanya memiliki otot...', o: ['Lambat', 'Sedang', 'Tipe cepat',
+                                'Elastis lambat', 'Tidak kuat'
+                            ], a: 2 },
+                        { q: 'Pada lari, pandangan diarahkan ke...', o: ['Atas', 'Bawah', 'Kanan kiri', 'Depan',
+                                'Belakang'
+                            ], a: 3 },
+                        { q: 'Finish dengan cara menjatuhkan badan terlalu jauh dapat...', o: ['Membantu kecepatan',
+                                'Membuat cedera', 'Menambah stamina', 'Menambah langkah', 'Menjaga ritme'
+                            ], a: 1 },
+                        { q: 'Dalam start jongkok, posisi tangan adalah...', o: ['Di belakang garis',
+                                'Di samping garis', 'Di depan garis', 'Menempel bahu', 'Di atas kepala'
+                            ], a: 0 },
+                        { q: 'Lari gawang membutuhkan koordinasi antara...', o: ['Lari dan lompat',
+                                'Lari dan lempar', 'Lari dan duduk', 'Lari dan jatuh', 'Lari dan jalan'
+                            ], a: 0 },
+                        { q: 'Teknik menarik napas saat sprint adalah...', o: ['Dalam dan pelan', 'Dangkal dan cepat',
+                                'Dalam dan lambat', 'Cepat dan dalam', 'Pelan dan panjang'
+                            ], a: 1 },
+                        { q: 'Lari 1500 meter membutuhkan kekuatan...', o: ['Daya tahan', 'Kecepatan murni',
+                                'Otot tangan', 'Lemparan', 'Tenaga ledak'
+                            ], a: 0 },
+                        { q: 'Pelari jarak pendek memerlukan...', o: ['Teknik endurance', 'Teknik sprint',
+                                'Teknik skipping', 'Teknik lompatan', 'Teknik pergantian arah'
+                            ], a: 1 },
+                        { q: 'Dalam estafet, pelari terakhir disebut...', o: ['Starter', 'Sprinter', 'Anchor',
+                                'Middle runner', 'Lead'
+                            ], a: 2 },
+                        { q: 'Pelari jarak jauh harus menghindari...', o: ['Kecepatan stabil', 'Langkah panjang',
+                                'Napas teratur', 'Kecepatan awal yang terlalu tinggi', 'Irama lari'
+                            ], a: 3 },
+                        { q: 'Lintasan lari standar memiliki lebar jalur...', o: ['0,5 m', '1 m', '1,22 m',
+                            '1,5 m', '2 m'], a: 2 },
+                        { q: 'Start yang paling tepat untuk nomor 200 meter adalah...', o: ['Start berdiri',
+                                'Start squat', 'Start jongkok', 'Start melayang', 'Start gawang'
+                            ], a: 2 }
+                    ]
+                },
+                'Senam Lantai': {
+                    icon: '🤸',
+                    questions: [
+                        { q: 'Senam lantai adalah senam yang dilakukan di atas...', o: ['Rumput', 'Matras',
+                                'Lantai kayu', 'Karpet', 'Semen'
+                            ], a: 1 },
+                        { q: 'Gerakan berguling ke depan disebut...', o: ['Roll belakang', 'Roll depan',
+                                'Headstand', 'Handstand', 'Back flip'
+                            ], a: 1 },
+                        { q: 'Sikap awal roll depan dimulai dari...', o: ['Berdiri', 'Tidur', 'Jongkok',
+                                'Berbaring', 'Duduk'
+                            ], a: 2 },
+                        { q: 'Gerakan berguling ke belakang disebut...', o: ['Roll depan', 'Roll belakang',
+                                'Handstand', 'Cartwheel', 'Jump roll'
+                            ], a: 1 },
+                        { q: 'Fungsi matras dalam senam lantai adalah...', o: ['Mempercepat gerakan',
+                                'Menghindari cedera', 'Menambah tenaga', 'Menambah kecepatan', 'Menambah tekanan'
+                            ], a: 1 },
+                        { q: 'Sikap lilin bertumpu pada...', o: ['Kepala', 'Tangan', 'Bahu', 'Pinggang',
+                            'Punggung'], a: 2 },
+                        { q: 'Gerakan handstand adalah berdiri dengan bertumpu pada...', o: ['Kepala', 'Tangan',
+                                'Punggung', 'Bahu', 'Lutut'
+                            ], a: 1 },
+                        { q: 'Salah satu unsur utama senam lantai adalah...', o: ['Kecepatan', 'Tenaga ledak',
+                                'Kelentukan', 'Lemparan', 'Ketepatan arah'
+                            ], a: 2 },
+                        { q: 'Gerakan kayang dilakukan dengan posisi badan...', o: ['Lurus ke depan',
+                                'Meliuk ke belakang', 'Meliuk ke samping', 'Meliuk ke depan', 'Terlentang'
+                            ], a: 1 },
+                        { q: 'Dalam roll depan, posisi kepala harus...', o: ['Tegak', 'Diturunkan', 'Diangkat',
+                                'Menghadap samping', 'Menoleh ke belakang'
+                            ], a: 1 },
+                        { q: 'Gerakan cartwheel sering disebut...', o: ['Kayang', 'Lenting belakang',
+                                'Guling samping', 'Koprol', 'Headstand'
+                            ], a: 2 },
+                        { q: 'Gerakan headstand bertumpu pada...', o: ['Tangan', 'Kepala dan tangan', 'Bahu',
+                                'Lutut', 'Pinggang'
+                            ], a: 1 },
+                        { q: 'Unsur utama senam adalah koordinasi dan...', o: ['Kecepatan', 'Irama', 'Ketepatan',
+                                'Keseimbangan', 'Daya tahan'
+                            ], a: 3 },
+                        { q: 'Roll depan dapat dilakukan dengan dua sikap awal, yaitu...', o: ['Berdiri dan tidur',
+                                'Berdiri dan duduk', 'Berdiri dan jongkok', 'Jongkok dan tidur',
+                            'Duduk dan berbaring'], a: 2 },
+                        { q: 'Gerakan guling belakang dimulai dari posisi...', o: ['Berbaring', 'Jongkok', 'Berdiri',
+                                'Duduk', 'Tidur'
+                            ], a: 1 },
+                        { q: 'Saat melakukan handstand, pandangan diarahkan ke...', o: ['Atas', 'Belakang',
+                                'Samping', 'Kedua tangan', 'Depan'
+                            ], a: 3 },
+                        { q: 'Tujuan pemanasan sebelum senam lantai adalah...', o: ['Menghemat energi',
+                                'Mengurangi suhu tubuh', 'Menghindari cedera', 'Memperlambat gerakan',
+                                'Menambah berat badan'
+                            ], a: 2 },
+                        { q: 'Sikap akhir roll belakang adalah...', o: ['Berdiri', 'Duduk', 'Jongkok', 'Berbaring',
+                                'Tidur'
+                            ], a: 2 },
+                        { q: 'Gerakan kayang melatih otot...', o: ['Tangan', 'Punggung', 'Dada', 'Perut', 'Kaki'],
+                            a: 1 },
+                        { q: 'Gerakan kayang dimulai dari posisi...', o: ['Berdiri', 'Tidur telentang', 'Jongkok',
+                                'Duduk', 'Tidur tengkurap'
+                            ], a: 0 },
+                        { q: 'Guling depan melatih kelenturan bagian...', o: ['Tangan', 'Pinggang', 'Punggung',
+                                'Leher', 'Perut'
+                            ], a: 2 },
+                        { q: 'Handstand membutuhkan kekuatan...', o: ['Pinggang', 'Bahu dan tangan', 'Punggung',
+                                'Kepala', 'Pinggul'
+                            ], a: 1 },
+                        { q: 'Roll depan yang benar adalah menolak dengan...', o: ['Punggung', 'Pinggang', 'Kepala',
+                                'Tangan', 'Lutut'
+                            ], a: 3 },
+                        { q: 'Cartwheel dimulai dari posisi...', o: ['Jongkok', 'Berdiri', 'Duduk', 'Telentang',
+                                'Tidur'
+                            ], a: 1 },
+                        { q: 'Gerakan menumpu pada dua tangan dan dua kaki disebut...', o: ['Split', 'Handstand',
+                                'Kayang', 'Sikap lilin', 'Jembatan'
+                            ], a: 2 },
+                        { q: 'Dalam gerakan sikap lilin, kaki harus...', o: ['Menekuk', 'Santai', 'Lurus ke atas',
+                                'Dibuka selebar bahu', 'Menekuk ke samping'
+                            ], a: 2 },
+                        { q: 'Unsur utama untuk menjaga keseimbangan adalah...', o: ['Konsentrasi', 'Kecepatan',
+                                'Targets gerak', 'Keberanian', 'Kekuatan jari'
+                            ], a: 0 },
+                        { q: 'Alat utama untuk senam lantai adalah...', o: ['Balok', 'Pita', 'Matras',
+                                'Meja lompat', 'Palang'
+                            ], a: 2 },
+                        { q: 'Gerakan lenting depan disebut juga...', o: ['Forward flip', 'Backflip', 'Handspring',
+                                'Roll', 'Cartwheel'
+                            ], a: 2 },
+                        { q: 'Untuk menghindari cedera saat berguling, dagu harus...', o: ['Diangkat',
+                                'Ditekan ke dada', 'Menghadap samping', 'Menoleh belakang', 'Diluruskan'
+                            ], a: 1 },
+                        { q: 'Gerakan berdiri dengan satu kaki disebut...', o: ['Burung bangau', 'Kayang', 'Split',
+                                'Headstand', 'Handstand'
+                            ], a: 0 },
+                        { q: 'Roll belakang menggunakan tumpuan...', o: ['Kepala', 'Siku', 'Punggung', 'Bahu',
+                                'Tangan dan bahu'
+                            ], a: 4 },
+                        { q: 'Split melatih kelenturan otot...', o: ['Bahu', 'Tangan', 'Paha', 'Leher', 'Punggung'],
+                            a: 2 },
+                        { q: 'Gerakan awal headstand adalah posisi...', o: ['Duduk', 'Jongkok', 'Berbaring',
+                                'Berdiri', 'Bertumpu tiga titik'
+                            ], a: 4 },
+                        { q: 'Dalam kayang dari posisi berdiri, tangan diarahkan...', o: ['Ke depan', 'Ke belakang',
+                                'Ke samping', 'Ke atas', 'Ke bawah'
+                            ], a: 1 },
+                        { q: 'Untuk menguasai handstand diperlukan...', o: ['Kecepatan', 'Daya ledak', 'Kelentukan',
+                                'Kekuatan lengan', 'Ragam ayunan'
+                            ], a: 3 },
+                        { q: 'Roll depan dapat dilakukan di...', o: ['Rumput basah', 'Matras', 'Permukaan keras',
+                                'Kerikil', 'Tanah berbatu'
+                            ], a: 1 },
+                        { q: 'Posisi tubuh saat cartwheel adalah...', o: ['Tegak', 'Meliuk', 'Berputar seperti roda',
+                                'Melompat', 'Bergeser'
+                            ], a: 2 },
+                        { q: 'Fungsi lengan dalam handstand adalah...', o: ['Menyeimbangkan tubuh',
+                                'Menyerap energi', 'Mendorong ke belakang', 'Mengunci kepala',
+                            'Mempercepat rotasi'], a: 0 },
+                        { q: 'Pada roll belakang, posisi kaki harus...', o: ['Lurus ke depan', 'Lurus ke atas',
+                                'Menekuk', 'Dibuka lebar', 'Melompat'
+                            ], a: 2 },
+                        { q: 'Gerakan meroda termasuk kategori...', o: ['Guling', 'Keseimbangan', 'Lenting',
+                                'Loncat', 'Putaran'
+                            ], a: 4 },
+                        { q: 'Gerakan penguatan yang membantu handstand adalah...', o: ['Squat', 'Sit up', 'Push up',
+                                'Lari', 'Kayang'
+                            ], a: 2 },
+                        { q: 'Split dilakukan dengan posisi kaki...', o: ['Menekuk', 'Ditarik ke belakang',
+                                'Dibuka selebar 180°', 'Meliuk ke atas', 'Dicapit'
+                            ], a: 2 },
+                        { q: 'Posisi tubuh saat kayang menyerupai...', o: ['Setengah lingkaran', 'Garis lurus',
+                                'Segitiga', 'Dua garis', 'Lingkaran penuh'
+                            ], a: 0 },
+                        { q: 'Gerakan salto ke belakang disebut...', o: ['Back handspring', 'Roll belakang',
+                                'Lenting belakang', 'Back flip', 'Cartwheel'
+                            ], a: 3 },
+                        { q: 'Ketika melakukan headstand, beban terbesar berada pada...', o: ['Tangan', 'Kepala',
+                                'Kaki', 'Perut', 'Punggung'
+                            ], a: 0 },
+                        { q: 'Unsur paling penting dalam gerakan sikap lilin adalah...', o: ['Daya ledak',
+                                'Keseimbangan', 'Daya tahan', 'Kecepatan', 'Ketelitian'
+                            ], a: 1 },
+                        { q: 'Roll depan disebut juga...', o: ['Forward roll', 'Backward roll', 'Head roll',
+                                'Bridge roll', 'Side roll'
+                            ], a: 0 },
+                        { q: 'Senam lantai dilakukan terutama untuk melatih...', o: ['Lemparan', 'Kekuatan kaki',
+                                'Kelentukan, keseimbangan, dan ketangkasan', 'Ketahanan tubuh', 'Kecepatan'
+                            ], a: 2 }
+                    ]
+                },
+                'Senam Irama': {
+                    icon: '🎵',
+                    questions: [
+                        { q: 'Senam irama adalah gerakan yang dilakukan mengikuti...', o: ['Perintah guru',
+                                'Irama atau musik', 'Kecepatan angin', 'Gerak teman', 'Hitungan bebas'
+                            ], a: 1 },
+                        { q: 'Salah satu unsur utama senam irama adalah...', o: ['Kecepatan', 'Ketepatan irama',
+                                'Lemparan kuat', 'Tendangan tinggi', 'Lari cepat'
+                            ], a: 1 },
+                        { q: 'Senam irama biasanya dilakukan dengan menggunakan...', o: ['Matras', 'Bola', 'Musik',
+                                'Peluit', 'Tali'
+                            ], a: 2 },
+                        { q: 'Gerakan dalam senam irama harus dilakukan secara...', o: ['Acak', 'Kaku',
+                                'Mengikuti pola', 'Tergesa-gesa', 'Tidak beraturan'
+                            ], a: 2 },
+                        { q: 'Senam irama dapat melatih kemampuan...', o: ['Konsentrasi dan keseimbangan',
+                                'Melempar jauh', 'Melompat tinggi', 'Sprint', 'Gulat'
+                            ], a: 0 },
+                        { q: 'Gerakan mengayun lengan dilakukan dengan mengikuti...', o: ['Irama musik',
+                                'Kecepatan lari', 'Gerak teman', 'Kekuatan tangan', 'Langkah kaki'
+                            ], a: 0 },
+                        { q: 'Irama dapat dibentuk dengan menggunakan...', o: ['Suara peluit', 'Alat musik',
+                                'Gambar', 'Cahaya', 'Warna'
+                            ], a: 1 },
+                        { q: 'Senam irama mengutamakan gerak yang bersifat...', o: ['Keras', 'Cepat',
+                                'Lembut dan terkontrol', 'Kaku', 'Tidak teratur'
+                            ], a: 2 },
+                        { q: 'Langkah dalam senam irama disebut...', o: ['Step', 'Slide', 'Hop', 'Kick', 'Turn'],
+                            a: 0 },
+                        { q: 'Latihan senam irama yang dilakukan tanpa musik disebut...', o: ['Silent move',
+                                'Gerak bebas', 'Senam irama hitung', 'Gerak cepat', 'Body move'
+                            ], a: 2 },
+                        { q: 'Senam irama dapat membentuk sikap...', o: ['Agresif', 'Disiplin dan percaya diri',
+                                'Takut', 'Malu', 'Santai'
+                            ], a: 1 },
+                        { q: 'Variasi langkah ke samping disebut...', o: ['Step', 'Sliding', 'Jumping', 'Turning',
+                                'Kicking'
+                            ], a: 1 },
+                        { q: 'Gerakan senam irama dipengaruhi oleh unsur...', o: ['Waktu, ruang, tenaga',
+                                'Kekuatan, kecepatan, stamina', 'Otot, tulang, sendi', 'Suara, musik, kostum',
+                                'Warna, bentuk, desain'
+                            ], a: 0 },
+                        { q: 'Gerakan putar dalam senam irama disebut...', o: ['Kick', 'Swing', 'Turn', 'Hop',
+                                'Slide'
+                            ], a: 2 },
+                        { q: 'Dalam senam irama, gerakan dilakukan secara...', o: ['Seragam', 'Acak',
+                                'Tidak teratur', 'Spontan', 'Diam'
+                            ], a: 0 },
+                        { q: 'Gerakan ayunan lengan dilakukan dengan...', o: ['Kaku', 'Pelan tanpa irama',
+                                'Rileks mengikuti musik', 'Tergesa-gesa', 'Terputus-putus'
+                            ], a: 2 },
+                        { q: 'Gerak langkah ke depan dan ke belakang disebut...', o: ['Forward–backward step',
+                                'Turn step', 'Slide step', 'Swing step', 'Cross step'
+                            ], a: 0 },
+                        { q: 'Senam irama bermanfaat untuk melatih...', o: ['Kelincahan lari', 'Koordinasi gerak',
+                                'Tendangan', 'Servis voli', 'Heading bola'
+                            ], a: 1 },
+                        { q: 'Gerakan senam irama yang tidak sesuai irama disebut...', o: ['On beat', 'Off beat',
+                                'Perfect beat', 'Sync beat', 'Rhythm beat'
+                            ], a: 1 },
+                        { q: 'Senam irama dapat dilakukan menggunakan alat seperti...', o: ['Dumbbell',
+                                'Pita dan simpai', 'Tombak', 'Raket', 'Bola basket'
+                            ], a: 1 },
+                        { q: 'Gerakan mengangkat lutut secara ritmis disebut...', o: ['High knee', 'Kick', 'Turn',
+                                'Slide', 'Jump'
+                            ], a: 0 },
+                        { q: 'Salah satu manfaat senam irama bagi kesehatan adalah...', o: [
+                                'Melatih kekuatan pukulan', 'Melatih fleksibilitas tubuh',
+                                'Meningkatkan berat badan', 'Mempercepat denyut jantung berlebihan',
+                                'Mengurangi kelincahan'
+                            ], a: 1 },
+                        { q: 'Gerakan memutar pergelangan tangan dalam senam irama disebut...', o: ['Wrist roll',
+                                'Swing', 'Circle move', 'Turn', 'Slide'
+                            ], a: 0 },
+                        { q: 'Senam irama membutuhkan koordinasi antara...', o: ['Pikiran, musik, dan arah angin',
+                                'Musik, gerakan, dan irama', 'Berat badan dan kekuatan', 'Lari cepat dan lompat',
+                                'Kekuatan tangan dan pukulan'
+                            ], a: 1 },
+                        { q: 'Irama yang cepat membutuhkan gerakan yang...', o: ['Lambat', 'Lembut', 'Dinamis',
+                                'Diam', 'Berat'
+                            ], a: 2 },
+                        { q: 'Senam irama termasuk cabang...', o: ['Atletik', 'Senam', 'Bela diri', 'Permainan',
+                                'Renang'
+                            ], a: 1 },
+                        { q: 'Gerakan senam irama yang memadukan lompat kecil disebut...', o: ['Skip', 'Slide',
+                                'Step', 'Turn', 'March'
+                            ], a: 0 },
+                        { q: 'Musik dengan tempo lambat cocok untuk gerakan...', o: ['Cepat', 'Kaku', 'Lembut',
+                                'Agresif', 'Tergesa-gesa'
+                            ], a: 2 },
+                        { q: 'Gerakan senam irama harus memperhatikan faktor...', o: ['Emosi', 'Kebisingan',
+                                'Irama dan ketepatan', 'Kekerasan suara', 'Arah angin'
+                            ], a: 2 },
+                        { q: 'Pita yang digunakan dalam senam irama disebut...', o: ['Sumpit', 'Ribbon', 'Rope',
+                                'Stick', 'Band'
+                            ], a: 1 },
+                        { q: 'Gerakan senam irama dapat dilakukan dalam bentuk...', o: ['Solo atau kelompok',
+                                'Hanya solo', 'Hanya kelompok', 'Diam', 'Permainan bola'
+                            ], a: 0 },
+                        { q: 'Simpai digunakan dengan melakukan gerakan...', o: ['Tendangan', 'Pukulan',
+                                'Ayunan dan putaran', 'Lari sprint', 'Tolakan'
+                            ], a: 2 },
+                        { q: 'Senam irama dapat mengembangkan rasa...', o: ['Emosi', 'Keterpaksaan',
+                                'Seni dan kepercayaan diri', 'Marah', 'Takut'
+                            ], a: 2 },
+                        { q: 'Gerakan paling dasar dalam senam irama adalah...', o: ['Split', 'Marching',
+                                'Roll depan', 'Headstand', 'Servis'
+                            ], a: 1 },
+                        { q: 'Tempo musik ditentukan oleh...', o: ['Ketukan per menit', 'Tinggi rendah nada',
+                                'Warna suara', 'Suara tepuk tangan', 'Frekuensi napas'
+                            ], a: 0 },
+                        { q: 'Gerakan senam irama yang dilakukan sambil berputar adalah...', o: ['March', 'Turn',
+                                'Slide', 'Kick', 'Swing'
+                            ], a: 1 },
+                        { q: 'Jika tempo musik meningkat, maka gerakan harus...', o: ['Tetap', 'Lebih lambat',
+                                'Sesuai dan lebih cepat', 'Berhenti', 'Tanpa irama'
+                            ], a: 2 },
+                        { q: 'Senam irama menciptakan suasana...', o: ['Tegang', 'Menegangkan',
+                                'Gembira dan bersemangat', 'Diam', 'Sedih'
+                            ], a: 2 },
+                        { q: 'Gerakan senam irama membutuhkan kontrol...', o: ['Emosi berlebihan',
+                                'Otot dan gerak tubuh', 'Pukulan keras', 'Tendangan tinggi', 'Sprint'
+                            ], a: 1 },
+                        { q: 'Musik dengan irama cepat biasanya menimbulkan gerakan...', o: ['Lembut', 'Lambat',
+                                'Kaku', 'Dinamis dan aktif', 'Diam'
+                            ], a: 3 },
+                        { q: 'Gerakan mengayun lengan disebut...', o: ['Kick', 'Swing', 'Hop', 'Jump', 'Step'],
+                            a: 1 },
+                        { q: 'Senam irama pada siswa dapat meningkatkan...', o: ['Kemampuan menendang',
+                                'Kelincahan dan koordinasi', 'Kekuatan pukulan', 'Kemampuan renang',
+                                'Kemampuan heading'
+                            ], a: 1 },
+                        { q: 'Gerakan yang tidak sesuai musik menyebabkan...', o: ['Kecocokan',
+                                'Ketidaksinkronan', 'Keindahan', 'Keluwesan', 'Keserasian'
+                            ], a: 1 },
+                        { q: 'Senam irama dapat berupa...', o: ['Olahraga renang', 'Permainan bola', 'Senam irama',
+                                'Tinju', 'Lempar lembing'
+                            ], a: 2 },
+                        { q: 'Gerakan kaki ke samping sambil meluncur disebut...', o: ['Step', 'Slide', 'Kick',
+                                'Turn', 'Bend'
+                            ], a: 1 },
+                        { q: 'Gerakan senam irama harus dilakukan dengan rasa...', o: ['Terpaksa', 'Tegang',
+                                'Tidak percaya diri', 'Gembira', 'Takut'
+                            ], a: 3 },
+                        { q: 'Musik dalam senam irama berfungsi sebagai...', o: ['Hiasan', 'Pemberi ritme gerak',
+                                'Penguat suara', 'Pemberi jeda', 'Pengukur berat badan'
+                            ], a: 1 },
+                        { q: 'Gerakan senam irama menuntut postur tubuh yang...', o: ['Kaku', 'Sembarangan',
+                                'Rileks dan luwes', 'Tegang', 'Diam'
+                            ], a: 2 },
+                        { q: 'Senam irama biasanya dilakukan untuk meningkatkan...', o: ['Ketangkasan servis',
+                                'Kekuatan pukulan', 'Kelentukan, keseimbangan, koordinasi', 'Kemampuan heading',
+                                'Kekuatan lari'
+                            ], a: 2 }
+                    ]
+                },
+                'HIV/AIDS': {
+                    icon: '🏥',
+                    questions: [
+                        { q: 'HIV merupakan singkatan dari...', o: ['Human Immune Virus',
+                                'Human Immunodeficiency Virus', 'Human Infect Virus', 'Human Infected Virus',
+                                'Human Immune Defend Virus'
+                            ], a: 1 },
+                        { q: 'Penyakit yang disebabkan oleh HIV disebut...', o: ['TB', 'AIDS', 'Hepatitis',
+                                'Demam berdarah', 'Kanker paru'
+                            ], a: 1 },
+                        { q: 'HIV menyerang sistem...', o: ['Pencernaan', 'Peredaran darah', 'Imunitas tubuh',
+                                'Pernapasan', 'Saraf'
+                            ], a: 2 },
+                        { q: 'AIDS merupakan singkatan dari...', o: ['Acquired Immunity Defect Syndrome',
+                                'Acquired Immune Deficiency Syndrome', 'Auto Immune Deficiency Syndrome',
+                                'Acute Infection Disease Syndrome', 'Acute Immunity Deficit System'
+                            ], a: 1 },
+                        { q: 'Cara utama penularan HIV adalah melalui...', o: ['Udara', 'Kontak kulit biasa',
+                                'Darah dan cairan tubuh tertentu', 'Bersin', 'Makanan'
+                            ], a: 2 },
+                        { q: 'Virus HIV dapat menular melalui kegiatan berikut, kecuali...', o: [
+                                'Hubungan seksual berisiko', 'Penggunaan jarum suntik bergantian',
+                                'Transfusi darah terinfeksi', 'Dari ibu ke bayi', 'Berjabat tangan'
+                            ], a: 4 },
+                        { q: 'Salah satu gejala awal infeksi HIV adalah...', o: ['Rambut rontok', 'Demam berulang',
+                                'Kulit mengelupas', 'Mual berat', 'Sakit kepala terus menerus'
+                            ], a: 1 },
+                        { q: 'Orang yang terlihat sehat tetap dapat menularkan HIV karena...', o: ['HIV mati di udara',
+                                'HIV hanya muncul saat AIDS', 'HIV dapat berada di masa jendela',
+                            'HIV tidak stabil', 'HIV tidak menular'], a: 2 },
+                        { q: 'Masa jendela (window period) adalah...', o: ['Kondisi HIV sudah mati',
+                                'HIV tidak berada dalam tubuh', 'HIV ada tetapi belum terdeteksi oleh tes',
+                                'HIV sudah menjadi AIDS', 'HIV sudah kebal obat'
+                            ], a: 2 },
+                        { q: 'Untuk mendeteksi HIV digunakan tes...', o: ['Urine', 'CT Scan', 'Rapid test / ELISA',
+                                'USG', 'Rontgen'
+                            ], a: 2 },
+                        { q: 'ARV adalah...', o: ['Obat untuk menyembuhkan HIV', 'Obat untuk menghentikan penularan',
+                                'Obat untuk menekan perkembangan HIV', 'Vitamin tubuh', 'Antibiotik'
+                            ], a: 2 },
+                        { q: 'Kepanjangan ARV adalah...', o: ['Anti Radical Virus', 'Anti Retro Viral',
+                                'Anti Removable Virus', 'Acute Retro Virus', 'Anti Resistant Viral'
+                            ], a: 1 },
+                        { q: 'HIV tidak dapat ditularkan melalui...', o: ['Air liur', 'ASI', 'Cairan sperma',
+                                'Darah', 'Cairan vagina'
+                            ], a: 0 },
+                        { q: 'Salah satu cara pencegahan HIV adalah...', o: ['Berganti-ganti pasangan',
+                                'Tidak menggunakan kondom', 'Menggunakan jarum suntik steril', 'Berbagi alat cukur',
+                                'Transfusi darah tanpa pemeriksaan'
+                            ], a: 2 },
+                        { q: 'Berikut termasuk kelompok berisiko tinggi HIV, kecuali...', o: ['Pengguna narkoba suntik',
+                                'Pekerja seks', 'Pasangan berganti-ganti', 'Petani sawah',
+                                'Penerima transfusi darah tidak aman'
+                            ], a: 3 },
+                        { q: 'HIV dapat ditularkan dari ibu ke bayi melalui...', o: ['Makanan', 'Udara',
+                                'Kehamilan, persalinan, dan menyusui', 'Sentuhan kulit', 'Pelukan'
+                            ], a: 2 },
+                        { q: 'Tujuan utama pengobatan ARV adalah...', o: ['Membunuh HIV', 'Menyembuhkan HIV',
+                                'Menekan jumlah virus agar tidak merusak imun', 'Menghilangkan gejala demam',
+                                'Mencegah batuk'
+                            ], a: 2 },
+                        { q: 'Alat berikut berpotensi menularkan HIV bila dipakai bersama, kecuali...', o: [
+                                'Jarum suntik', 'Jarum tato', 'Pisau cukur', 'Sisir', 'Alat tindik'
+                            ], a: 3 },
+                        { q: 'Tahap akhir infeksi HIV disebut...', o: ['Window period', 'Serokonversi', 'AIDS',
+                                'Stadium awal', 'Stadium bebas'
+                            ], a: 2 },
+                        { q: 'HIV tidak dapat bertahan hidup di...', o: ['Darah', 'Cairan tubuh', 'Jarum suntik',
+                                'Lingkungan terbuka', 'Benda tajam'
+                            ], a: 3 },
+                        { q: 'Seseorang disebut ODHA berarti...', o: ['Orang Dengan Hepatitis A',
+                                'Orang Dengan HIV/AIDS', 'Orang Dermawan HIV', 'Orang Dalam Hidup Aman',
+                                'Orang Dalam Hati Aman'
+                            ], a: 1 },
+                        { q: 'Salah satu faktor yang mempercepat perkembangan HIV menjadi AIDS adalah...', o: [
+                                'Pola makan sehat', 'Stres berat', 'Olahraga teratur', 'Istirahat cukup',
+                            'Hidup bersih'], a: 1 },
+                        { q: 'Pada penderita AIDS, risiko infeksi meningkat karena...', o: ['Virus berhenti bekerja',
+                                'Sistem imun rusak', 'Virus menjadi kebal', 'Tubuh menghasilkan lebih banyak antibodi',
+                                'Tubuh menolak virus'
+                            ], a: 1 },
+                        { q: 'HIV tidak dapat menular melalui gigitan...', o: ['Nyamuk', 'Jarum suntik', 'Tato',
+                                'Transfusi darah', 'Seks bebas'
+                            ], a: 0 },
+                        { q: 'Seseorang dapat terinfeksi HIV jika melakukan hubungan seksual tanpa...', o: [
+                                'Makan bersama', 'Kondom', 'Minum air putih', 'Cuci tangan', 'Pakaian tebal'
+                            ], a: 1 },
+                        { q: 'Untuk mencegah transmisi HIV pada tenaga medis digunakan...', o: ['Masker kain',
+                                'Pelindung wajah dan sarung tangan', 'Topi', 'Rompi', 'Sabuk'
+                            ], a: 1 },
+                        { q: 'HIV menyerang sel darah putih jenis...', o: ['Eritrosit', 'Trombosit', 'Leukosit CD4',
+                                'Hemoglobin', 'Plasma'
+                            ], a: 2 },
+                        { q: 'Transfusi darah aman dilakukan jika...', o: ['Darah tidak diperiksa',
+                                'Darah dari donor yang tidak dikenal', 'Darah sudah melalui tes HIV',
+                                'Darah dari teman saja', 'Darah langsung diambil'
+                            ], a: 2 },
+                        { q: 'Upaya pemerintah mencegah HIV melalui program...', o: ['Konseling dan tes HIV',
+                                'Pemberian antibiotik', 'Program diet sehat', 'Penyemprotan udara',
+                            'Pemberian vaksin flu'], a: 0 },
+                        { q: 'Salah satu tanda infeksi oportunistik pada AIDS adalah...', o: ['Berat badan stabil',
+                                'Sering berkeringat malam', 'Nafsu makan meningkat', 'Kulit mengering',
+                            'Rambut tumbuh cepat'
+                            ], a: 1 }
+                    ]
+                }
+            };
 
-        // Variabel global
-        let currentQuestions = [];       // array soal setelah diacak
-        let userAnswers = new Map();     // key: index soal, value: true/false (boolean pilihan user)
-        let score = 0;
-        
-        // Elemen DOM
-        const gridContainer = document.getElementById('quizGrid');
-        const scoreDisplay = document.getElementById('scoreDisplay');
-        const progressCountSpan = document.getElementById('progressCount');
-        const progressFillDiv = document.getElementById('progressFill');
-        const reshuffleBtn = document.getElementById('reshuffleBtn');
-        const resetBtn = document.getElementById('resetBtn');
-        
-        // Fungsi mengacak array (Fisher-Yates)
-        function shuffleArray(arr) {
-            for (let i = arr.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [arr[i], arr[j]] = [arr[j], arr[i]];
+            // ──────────────────────────────────────────────
+            // STATE
+            // ──────────────────────────────────────────────
+            const categories = Object.keys(quizData);
+            let currentCategory = categories[0];
+            let currentIndex = 0;
+            // userAnswers: { [category]: { [questionIndex]: selectedOptionIndex } }
+            let userAnswers = {};
+            categories.forEach(cat => { userAnswers[cat] = {}; });
+
+            // ──────────────────────────────────────────────
+            // DOM REFS
+            // ──────────────────────────────────────────────
+            const categorySelector = document.getElementById('categorySelector');
+            const mainCard = document.getElementById('mainCard');
+            const progressBar = document.getElementById('progressBar');
+            const questionNum = document.getElementById('questionNum');
+            const questionText = document.getElementById('questionText');
+            const optionsContainer = document.getElementById('optionsContainer');
+            const feedback = document.getElementById('feedback');
+            const scoreDisplay = document.getElementById('scoreDisplay');
+            const navButtons = document.getElementById('navButtons');
+            const summaryGrid = document.getElementById('summaryGrid');
+
+            // ──────────────────────────────────────────────
+            // RENDER CATEGORY BUTTONS
+            // ──────────────────────────────────────────────
+            function renderCategoryButtons() {
+                categorySelector.innerHTML = '';
+                categories.forEach(cat => {
+                    const btn = document.createElement('button');
+                    btn.className = 'cat-btn' + (cat === currentCategory ? ' active' : '');
+                    btn.textContent = quizData[cat].icon + ' ' + cat;
+                    btn.addEventListener('click', () => {
+                        currentCategory = cat;
+                        currentIndex = 0;
+                        renderAll();
+                    });
+                    categorySelector.appendChild(btn);
+                });
             }
-            return arr;
-        }
-        
-        // Inisialisasi / acak ulang soal
-        function initRandomQuestions() {
-            // Clone bank soal lalu acak
-            currentQuestions = shuffleArray([...bankSoal]);
-            userAnswers.clear();
-            calculateScore();
-            renderQuizGrid();
-            updateProgressAndScore();
-        }
-        
-        // Hitung skor berdasarkan userAnswers yang tersimpan
-        function calculateScore() {
-            let newScore = 0;
-            for (let i = 0; i < currentQuestions.length; i++) {
-                const userAns = userAnswers.get(i);
-                if (userAns !== undefined && userAns === currentQuestions[i].correct) {
-                    newScore++;
-                }
+
+            // ──────────────────────────────────────────────
+            // SCORE CALCULATION
+            // ──────────────────────────────────────────────
+            function getScoreForCategory(cat) {
+                const questions = quizData[cat].questions;
+                let correct = 0;
+                questions.forEach((q, i) => {
+                    if (userAnswers[cat][i] !== undefined && userAnswers[cat][i] === q.a) correct++;
+                });
+                return { correct, total: questions.length };
             }
-            score = newScore;
-            if (scoreDisplay) scoreDisplay.innerText = score;
-            return score;
-        }
-        
-        // Update progress bar & teks progres
-        function updateProgressAndScore() {
-            const total = currentQuestions.length;
-            const answered = userAnswers.size;
-            if (progressCountSpan) progressCountSpan.innerText = `${answered} / ${total}`;
-            const percent = total === 0 ? 0 : (answered / total) * 100;
-            if (progressFillDiv) progressFillDiv.style.width = `${percent}%`;
-            calculateScore(); // refresh skor tampilan
-        }
-        
-        // Render semua kartu soal (grid)
-        function renderQuizGrid() {
-            if (!gridContainer) return;
-            gridContainer.innerHTML = '';
-            if (currentQuestions.length === 0) {
-                gridContainer.innerHTML = '<div class="col-span-full text-center text-white text-xl">Memuat soal...</div>';
-                return;
+
+            function getTotalScore() {
+                let correct = 0,
+                    total = 0;
+                categories.forEach(cat => {
+                    const s = getScoreForCategory(cat);
+                    correct += s.correct;
+                    total += s.total;
+                });
+                return { correct, total };
             }
-            
-            currentQuestions.forEach((q, idx) => {
-                const userChoice = userAnswers.get(idx); // boolean (true=benar dipilih, false=salah dipilih) atau undefined
-                const isAnswered = userChoice !== undefined;
-                const isCorrectAnswer = (isAnswered && userChoice === q.correct);
-                
-                // membuat kartu
-                const card = document.createElement('div');
-                card.className = 'quiz-card bg-white rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all fade-scale';
-                card.innerHTML = `
-                    <div class="p-5 border-b border-gray-100 flex justify-between items-start gap-2">
-                        <div class="flex-1">
-                            <div class="flex items-center gap-2 text-xs text-gray-400 font-semibold mb-2">
-                                <i class="fas fa-question-circle"></i> Soal ${idx+1}
-                                ${isAnswered ? (isCorrectAnswer ? '<span class="bg-green-100 text-green-700 px-2 py-0.5 rounded-full text-[10px]"><i class="fas fa-check"></i> Terjawab</span>' : '<span class="bg-red-100 text-red-600 px-2 py-0.5 rounded-full text-[10px]"><i class="fas fa-times"></i> Terjawab</span>') : '<span class="bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full text-[10px]">Belum dijawab</span>'}
-                            </div>
-                            <p class="text-gray-800 font-semibold text-base md:text-lg leading-relaxed">${escapeHtml(q.text)}</p>
-                        </div>
-                        <div class="text-right">
-                            <div class="w-8 h-8 rounded-full bg-gradient-to-r ${isAnswered ? (isCorrectAnswer ? 'from-green-400 to-green-600' : 'from-red-400 to-red-600') : 'from-gray-300 to-gray-400'} text-white text-xs flex items-center justify-center font-bold shadow">
-                                ${isAnswered ? (isCorrectAnswer ? '✓' : '✗') : '?'}
-                            </div>
-                        </div>
-                    </div>
-                    <div class="p-5 bg-gray-50 flex flex-col sm:flex-row gap-3 justify-between items-center">
-                        <div class="flex gap-3 w-full sm:w-auto">
-                            <button data-idx="${idx}" data-choice="true" class="option-btn flex-1 sm:flex-none bg-emerald-100 hover:bg-emerald-200 text-emerald-800 font-bold py-2.5 px-6 rounded-xl transition shadow flex items-center justify-center gap-2 ${userChoice === true ? 'ring-2 ring-emerald-500 bg-emerald-200' : ''}">
-                                <i class="fas fa-thumbs-up"></i> Benar
-                            </button>
-                            <button data-idx="${idx}" data-choice="false" class="option-btn flex-1 sm:flex-none bg-rose-100 hover:bg-rose-200 text-rose-800 font-bold py-2.5 px-6 rounded-xl transition shadow flex items-center justify-center gap-2 ${userChoice === false ? 'ring-2 ring-rose-500 bg-rose-200' : ''}">
-                                <i class="fas fa-thumbs-down"></i> Salah
-                            </button>
-                        </div>
-                        ${isAnswered ? `<button data-feedback-idx="${idx}" class="show-feedback-btn text-xs text-indigo-600 hover:text-indigo-800 font-medium flex items-center gap-1"><i class="fas fa-key"></i> Lihat Kunci</button>` : '<span class="text-xs text-gray-400">Pilih jawaban untuk melihat kunci jika salah</span>'}
-                    </div>
-                    <div id="feedback-${idx}" class="px-5 pb-5 bg-gray-50 hidden transition-all"></div>
-                `;
-                gridContainer.appendChild(card);
-            });
-            
-            // Attach event listener untuk tombol Benar/Salah (menggunakan event delegation)
-            document.querySelectorAll('.option-btn').forEach(btn => {
-                btn.removeEventListener('click', handleAnswerClick);
-                btn.addEventListener('click', handleAnswerClick);
-            });
-            // Tombol lihat kunci
-            document.querySelectorAll('.show-feedback-btn').forEach(btn => {
-                btn.removeEventListener('click', handleShowFeedback);
-                btn.addEventListener('click', handleShowFeedback);
-            });
-        }
-        
-        // Handler menjawab
-        function handleAnswerClick(e) {
-            const btn = e.currentTarget;
-            const idx = parseInt(btn.getAttribute('data-idx'));
-            const choiceVal = btn.getAttribute('data-choice'); // "true" atau "false"
-            const userChoiceBool = (choiceVal === "true");
-            if (isNaN(idx)) return;
-            
-            // Simpan jawaban
-            userAnswers.set(idx, userChoiceBool);
-            // Re-render grid untuk update tampilan tombol & feedback bisa ditampilkan lagi (namun kita akan update card spesifik agar efisien)
-            // Akan lebih smooth jika update card tersebut tanpa re-render semua. Tapi karena tidak terlalu besar, lakukan render ulang saja.
-            renderQuizGrid();
-            updateProgressAndScore();
-            
-            // Tampilkan feedback langsung untuk soal yang baru dijawab (kartu baru sudah ada, tapi feedback masih hidden)
-            // maka kita panggil showFeedback untuk soal ini otomatis
-            const feedbackDiv = document.getElementById(`feedback-${idx}`);
-            if (feedbackDiv) {
-                const q = currentQuestions[idx];
-                const userAns = userAnswers.get(idx);
-                const isCorrect = (userAns === q.correct);
-                feedbackDiv.innerHTML = generateFeedbackHTML(q, userAns, isCorrect);
-                feedbackDiv.classList.remove('hidden');
-                feedbackDiv.classList.add('fade-scale');
-            } else {
-                // jika belum ada mungkin karena render ulang baru, langsung panggil show via dom
-                setTimeout(() => {
-                    const fb = document.getElementById(`feedback-${idx}`);
-                    if (fb) {
-                        const qq = currentQuestions[idx];
-                        const ua = userAnswers.get(idx);
-                        const ic = (ua === qq.correct);
-                        fb.innerHTML = generateFeedbackHTML(qq, ua, ic);
-                        fb.classList.remove('hidden');
+
+            // ──────────────────────────────────────────────
+            // RENDER ALL
+            // ──────────────────────────────────────────────
+            function renderAll() {
+                renderCategoryButtons();
+                renderQuestion();
+                renderSummary();
+                window.scrollTo({ top: mainCard.offsetTop - 100, behavior: 'smooth' });
+            }
+
+            function renderQuestion() {
+                const questions = quizData[currentCategory].questions;
+                const q = questions[currentIndex];
+                const total = questions.length;
+                const answered = userAnswers[currentCategory][currentIndex];
+                const isAnswered = answered !== undefined;
+                const isCorrect = isAnswered && answered === q.a;
+
+                // Progress bar
+                const answeredCount = Object.keys(userAnswers[currentCategory]).filter(k => userAnswers[
+                    currentCategory][k] !== undefined).length;
+                progressBar.style.width = ((answeredCount / total) * 100) + '%';
+
+                // Question num & text
+                questionNum.textContent =
+                    `📂 ${currentCategory} • Soal ${currentIndex + 1} dari ${total} • ${quizData[currentCategory].icon}`;
+                questionText.textContent = q.q;
+
+                // Options
+                const letters = ['A', 'B', 'C', 'D', 'E'];
+                optionsContainer.innerHTML = '';
+                q.o.forEach((opt, idx) => {
+                    const btn = document.createElement('button');
+                    btn.className = 'option-btn';
+                    if (isAnswered && idx === q.a) btn.classList.add('correct');
+                    if (isAnswered && idx === answered && idx !== q.a) btn.classList.add('incorrect');
+                    if (!isAnswered) btn.classList.add('clickable');
+                    btn.disabled = isAnswered;
+                    btn.innerHTML = `<span class="option-letter">${letters[idx]}</span> ${opt}`;
+                    if (!isAnswered) {
+                        btn.addEventListener('click', () => selectAnswer(idx));
                     }
-                }, 20);
-            }
-        }
-        
-        // Menampilkan feedback (manual dari tombol lihat kunci)
-        function handleShowFeedback(e) {
-            const btn = e.currentTarget;
-            const idx = parseInt(btn.getAttribute('data-feedback-idx'));
-            if (isNaN(idx)) return;
-            const feedbackDiv = document.getElementById(`feedback-${idx}`);
-            if (feedbackDiv) {
-                const q = currentQuestions[idx];
-                const userAns = userAnswers.get(idx);
-                if (userAns !== undefined) {
-                    const isCorrect = (userAns === q.correct);
-                    feedbackDiv.innerHTML = generateFeedbackHTML(q, userAns, isCorrect);
-                    feedbackDiv.classList.remove('hidden');
-                    feedbackDiv.classList.add('fade-scale');
-                } else {
-                    feedbackDiv.innerHTML = `<div class="bg-yellow-50 p-3 rounded-xl text-yellow-800 text-sm"><i class="fas fa-info-circle"></i> Belum ada jawaban. Pilih Benar/Salah terlebih dahulu.</div>`;
-                    feedbackDiv.classList.remove('hidden');
+                    optionsContainer.appendChild(btn);
+                });
+
+                // Feedback
+                feedback.className = 'feedback';
+                feedback.classList.remove('show', 'correct-fb', 'incorrect-fb');
+                if (isAnswered) {
+                    feedback.classList.add('show');
+                    if (isCorrect) {
+                        feedback.classList.add('correct-fb');
+                        feedback.textContent = '✅ Benar! Jawaban kamu tepat.';
+                    } else {
+                        feedback.classList.add('incorrect-fb');
+                        feedback.textContent = `❌ Salah. Jawaban yang benar adalah ${letters[q.a]}. ${q.o[q.a]}`;
+                    }
+                }
+
+                // Score display
+                const sc = getScoreForCategory(currentCategory);
+                scoreDisplay.innerHTML = `
+                    <span class="score-chip"><span class="emoji">✅</span> Benar: ${sc.correct}</span>
+                    <span class="score-chip"><span class="emoji">❌</span> Salah: ${sc.total - sc.correct - (isAnswered ? 0 : Object.keys(userAnswers[currentCategory]).filter(k=>userAnswers[currentCategory][k]!==undefined).length - sc.correct)}</span>
+                    <span class="score-chip"><span class="emoji">📝</span> Terjawab: ${Object.keys(userAnswers[currentCategory]).filter(k=>userAnswers[currentCategory][k]!==undefined).length}/${sc.total}</span>
+                    <span class="score-chip"><span class="emoji">⭐</span> Skor: ${sc.total > 0 ? Math.round((sc.correct/sc.total)*100) : 0}%</span>
+                `;
+
+                // Refresh score display properly
+                const ansCount = Object.keys(userAnswers[currentCategory]).filter(k => userAnswers[currentCategory][
+                    k
+                ] !== undefined).length;
+                scoreDisplay.innerHTML = `
+                    <span class="score-chip"><span class="emoji">✅</span> Benar: ${sc.correct}</span>
+                    <span class="score-chip"><span class="emoji">❌</span> Salah: ${ansCount - sc.correct}</span>
+                    <span class="score-chip"><span class="emoji">📝</span> Terjawab: ${ansCount}/${sc.total}</span>
+                    <span class="score-chip"><span class="emoji">⭐</span> Skor: ${sc.total > 0 ? Math.round((sc.correct/sc.total)*100) : 0}%</span>
+                `;
+
+                // Nav buttons
+                navButtons.innerHTML = '';
+                if (currentIndex > 0) {
+                    const prevBtn = document.createElement('button');
+                    prevBtn.className = 'nav-btn btn-prev';
+                    prevBtn.textContent = '⬅ Sebelumnya';
+                    prevBtn.addEventListener('click', () => { currentIndex--;
+                        renderAll(); });
+                    navButtons.appendChild(prevBtn);
+                }
+                if (currentIndex < total - 1) {
+                    const nextBtn = document.createElement('button');
+                    nextBtn.className = 'nav-btn btn-next';
+                    nextBtn.textContent = 'Selanjutnya ➡';
+                    nextBtn.addEventListener('click', () => { currentIndex++;
+                        renderAll(); });
+                    navButtons.appendChild(nextBtn);
+                }
+                const resetBtn = document.createElement('button');
+                resetBtn.className = 'nav-btn btn-reset';
+                resetBtn.textContent = '🔄 Ulangi Kategori';
+                resetBtn.addEventListener('click', () => {
+                    if (confirm('Reset semua jawaban untuk kategori "' + currentCategory + '"?')) {
+                        userAnswers[currentCategory] = {};
+                        currentIndex = 0;
+                        renderAll();
+                    }
+                });
+                navButtons.appendChild(resetBtn);
+
+                if (isAnswered && currentIndex < total - 1) {
+                    const autoNext = document.createElement('button');
+                    autoNext.className = 'nav-btn btn-next';
+                    autoNext.textContent = 'Lanjut ➡';
+                    autoNext.style.marginLeft = '8px';
+                    autoNext.addEventListener('click', () => { currentIndex++;
+                        renderAll(); });
+                    navButtons.appendChild(autoNext);
                 }
             }
-        }
-        
-        // Generate HTML feedback (kunci jawaban dan pembahasan)
-        function generateFeedbackHTML(question, userChoiceBool, isCorrectLocal) {
-            if (!isCorrectLocal) {
-                const correctAnswerText = question.correct ? "BENAR" : "SALAH";
-                return `
-                    <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded-xl shadow-md">
-                        <div class="flex gap-2 items-start">
-                            <i class="fas fa-times-circle text-red-500 text-xl mt-0.5"></i>
-                            <div>
-                                <p class="font-bold text-red-700">❌ Jawaban Salah</p>
-                                <p class="text-sm text-gray-700 mt-1"><span class="font-semibold">🔑 Kunci Jawaban:</span> Pernyataan seharusnya <span class="underline font-bold">${correctAnswerText}</span></p>
-                                <div class="bg-white p-2 rounded-lg mt-2 text-sm text-gray-800 border border-red-100">
-                                    <i class="fas fa-graduation-cap text-indigo-500 mr-1"></i> <strong>Pembahasan:</strong> ${escapeHtml(question.explanation)}
-                                </div>
-                                <p class="text-xs text-gray-500 mt-2">📌 Pernyataan: "${escapeHtml(question.text)}"</p>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            } else {
-                return `
-                    <div class="bg-green-50 border-l-4 border-green-500 p-4 rounded-xl shadow-md">
-                        <div class="flex gap-2 items-start">
-                            <i class="fas fa-check-circle text-green-500 text-xl mt-0.5"></i>
-                            <div>
-                                <p class="font-bold text-green-700">✅ Jawaban Benar!</p>
-                                <p class="text-sm text-gray-700 mt-1">${question.correct ? "Pernyataan ini sesuai fakta." : "Pernyataan ini memang salah, pilihan kamu tepat."}</p>
-                                <div class="bg-white p-2 rounded-lg mt-2 text-sm text-gray-800">
-                                    <i class="fas fa-info-circle text-blue-500 mr-1"></i> ${escapeHtml(question.explanation)}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `;
+
+            function selectAnswer(idx) {
+                userAnswers[currentCategory][currentIndex] = idx;
+                renderAll();
             }
-        }
-        
-        // Fungsi reset semua jawaban (tanpa mengacak ulang soal)
-        function resetAllAnswers() {
-            userAnswers.clear();
-            renderQuizGrid();
-            updateProgressAndScore();
-            // Sembunyikan semua feedback
-            document.querySelectorAll('[id^="feedback-"]').forEach(el => {
-                el.classList.add('hidden');
-                el.innerHTML = '';
+
+            function renderSummary() {
+                summaryGrid.innerHTML = '<strong style="grid-column:1/-1;text-align:center;margin-bottom:4px;">📊 Ringkasan Semua Kategori</strong>';
+                categories.forEach(cat => {
+                    const sc = getScoreForCategory(cat);
+                    const totalQ = sc.total;
+                    const answeredCount = Object.keys(userAnswers[cat]).filter(k => userAnswers[cat][k] !==
+                        undefined).length;
+                    const done = answeredCount === totalQ && totalQ > 0;
+                    const div = document.createElement('div');
+                    div.className = 'summary-item' + (done ? ' done' : '');
+                    div.innerHTML =
+                        `<span>${quizData[cat].icon}</span><br><span style="font-weight:700">${cat}</span><br><span class="num">${answeredCount}/${totalQ}</span><br><small>⭐ ${totalQ>0?Math.round((sc.correct/totalQ)*100):0}%</small>`;
+                    div.addEventListener('click', () => {
+                        currentCategory = cat;
+                        currentIndex = 0;
+                        renderAll();
+                    });
+                    summaryGrid.appendChild(div);
+                });
+                const totalSc = getTotalScore();
+                const totalDiv = document.createElement('div');
+                totalDiv.className = 'summary-item';
+                totalDiv.style.background = '#eff6ff';
+                totalDiv.style.borderColor = '#93c5fd';
+                totalDiv.innerHTML =
+                    `<span>🏆</span><br><span style="font-weight:700">TOTAL</span><br><span class="num">${totalSc.correct}/${totalSc.total}</span><br><small>⭐ ${totalSc.total>0?Math.round((totalSc.correct/totalSc.total)*100):0}%</small>`;
+                summaryGrid.appendChild(totalDiv);
+            }
+
+            // ──────────────────────────────────────────────
+            // INIT
+            // ──────────────────────────────────────────────
+            renderAll();
+
+            // Keyboard navigation
+            document.addEventListener('keydown', (e) => {
+                const total = quizData[currentCategory].questions.length;
+                if (e.key === 'ArrowRight' && currentIndex < total - 1) {
+                    e.preventDefault();
+                    currentIndex++;
+                    renderAll();
+                } else if (e.key === 'ArrowLeft' && currentIndex > 0) {
+                    e.preventDefault();
+                    currentIndex--;
+                    renderAll();
+                } else if (e.key >= '1' && e.key <= '5') {
+                    const idx = parseInt(e.key) - 1;
+                    const questions = quizData[currentCategory].questions;
+                    if (idx < questions[currentIndex].o.length && userAnswers[currentCategory][currentIndex] ===
+                        undefined) {
+                        e.preventDefault();
+                        selectAnswer(idx);
+                    }
+                }
             });
-            showToast("Semua jawaban direset, skor kembali 0", "bg-indigo-500");
-        }
-        
-        // Acak ulang soal (shuffle ulang)
-        function reshuffleQuestions() {
-            currentQuestions = shuffleArray([...bankSoal]);
-            userAnswers.clear();
-            renderQuizGrid();
-            updateProgressAndScore();
-            showToast("Soal & urutan diacak ulang! Mulai jawab lagi.", "bg-purple-600");
-        }
-        
-        // Toast notifikasi
-        function showToast(msg, bgColor = "bg-gray-800") {
-            const toast = document.createElement('div');
-            toast.className = `fixed bottom-5 left-1/2 transform -translate-x-1/2 ${bgColor} text-white px-5 py-3 rounded-full shadow-2xl z-50 text-sm font-semibold flex items-center gap-2 backdrop-blur-sm transition-all duration-300`;
-            toast.innerHTML = `<i class="fas fa-sync-alt"></i> ${msg}`;
-            document.body.appendChild(toast);
-            setTimeout(() => {
-                toast.style.opacity = '0';
-                setTimeout(() => toast.remove(), 400);
-            }, 2000);
-        }
-        
-        function escapeHtml(str) {
-            return str.replace(/[&<>]/g, function(m) {
-                if (m === '&') return '&amp;';
-                if (m === '<') return '&lt;';
-                if (m === '>') return '&gt;';
-                return m;
-            });
-        }
-        
-        // Event listeners
-        reshuffleBtn?.addEventListener('click', reshuffleQuestions);
-        resetBtn?.addEventListener('click', resetAllAnswers);
-        
-        // Mulai aplikasi
-        initRandomQuestions();
+        })();
     </script>
 </body>
 </html>
-```
